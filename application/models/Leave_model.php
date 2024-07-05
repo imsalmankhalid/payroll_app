@@ -40,7 +40,7 @@
         return $result;
     }
     public function GetAllHoliInfoForCalendar(){
-        $sql = "SELECT holiday_name AS `title`, from_date AS `start` FROM `holiday`";
+        $sql = "SELECT * FROM `holiday`";
         $query = $this->db->query($sql);
         $result = $query->result();
         return json_encode($result);

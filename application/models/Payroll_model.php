@@ -25,6 +25,17 @@
         $result = $query->row();
         return $result;         
     }
+
+    public function GetDepDateEmployee($depid, $dt){
+      $sql = "SELECT `employee`.*,
+        `emp_salary`.`total`
+        FROM `employee`
+        LEFT JOIN `emp_salary` ON `employee`.`em_id`=`emp_salary`.`emp_id`
+        WHERE `employee`.`dep_id`='$depid'";
+          $query = $this->db->query($sql);
+          $result = $query->result();
+          return $result;         
+      } 
     public function GetDepEmployee($depid){
     $sql = "SELECT `employee`.*,
       `emp_salary`.`total`
