@@ -42,6 +42,7 @@ class Settings extends CI_Controller {
         $email = $this->input->post('email');
         $address = $this->input->post('address');
         $address2 = $this->input->post('address2');
+        $breakTime = $this->input->post('breakTime');
         $this->load->library('form_validation');
         $this->form_validation->set_error_delimiters();
         // Validating Title Field
@@ -97,7 +98,8 @@ class Settings extends CI_Controller {
 					'symbol' => $symbol,
 					'system_email'=>$email,
                     'address'=>$address,
-					'address2'=>$address2
+					'address2'=>$address2,
+                    'breakTime' => $breakTime 
                 );
             $success = $this->settings_model->SettingsUpdate($id,$data);
 			echo 'Successfully Updated';
@@ -116,6 +118,7 @@ class Settings extends CI_Controller {
 					'system_email'=>$email,
                     'address'=>$address,
 					'address2'=>$address2,
+                    'breakTime' => $breakTime 
                 );
             $success = $this->settings_model->SettingsUpdate($id,$data);
 			echo 'Successfully Updated';

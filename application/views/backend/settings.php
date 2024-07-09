@@ -96,6 +96,12 @@
                                             </div>
                                         </div>
                                         <div class="form-group clearfix">
+                                            <label for="title" class="col-md-3">Break Time</label>
+                                            <div class="col-md-9">
+                                                <input type="text" class="form-control" name="breakTime" value="<?php echo $settingsvalue->breakTime; ?>" id="title" placeholder="Break time (minutes)">
+                                            </div>
+                                        </div>  
+                                        <div class="form-group clearfix">
                                             <div class="col-md-9 col-md-offset-3">
                                                 <input type="hidden" name="id" value="<?php echo $settingsvalue->id; ?>"/>
                                                 <button type="submit" name="submit" id="btnSubmit" class="btn btn-custom">Submit</button>

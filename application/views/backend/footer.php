@@ -174,9 +174,15 @@
         'default': 'now'
     });
     $('.clockpicker').clockpicker({
-        donetext: 'Done',
+        placement: 'bottom',
+        align: 'left',
+        autoclose: true,
+        'default': 'now'
     }).find('input').change(function() {
         console.log(this.value);
+        if (typeof calculateDuration === 'function') {
+            calculateDuration();
+        }
     });
     $('#check-minutes').click(function(e) {
         // Have to stop propagation here

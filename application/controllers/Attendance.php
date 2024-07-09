@@ -190,11 +190,13 @@ class Attendance extends CI_Controller
                     $attdate = $selected_month . '-' . str_pad($day, 2, '0', STR_PAD_LEFT); // Format the date
                     $signin  = $data['signin'];
                     $signout = $data['signout'];
+                    $break = $data['break'];
         
                     // Perform necessary validations
                     $this->form_validation->set_rules('emid', 'Employee ID', 'trim|required|xss_clean');
                     $this->form_validation->set_rules('attendance[' . $day . '][signin]', 'Sign In Time for Day ' . $day, 'trim|required|xss_clean');
                     $this->form_validation->set_rules('attendance[' . $day . '][signout]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
+                    $this->form_validation->set_rules('attendance[' . $day . '][break]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
                     // Add more rules as needed
         
                     if ($this->form_validation->run() == FALSE) {
@@ -204,8 +206,14 @@ class Attendance extends CI_Controller
                         // Process the data
                         $sin  = new DateTime($attdate . ' ' . $signin);
                         $sout = new DateTime($attdate . ' ' . $signout);
-                        $hour = $sin->diff($sout);
-                        $work = $hour->format('%H h %i m');
+                       
+                        $interval = $sin->diff($sout);  // Get the difference between sign in and sign out times
+                        $totalMinutes = ($interval->h * 60) + $interval->i - $break;  // Convert to minutes and subtract break time
+                        
+                        $hours = floor($totalMinutes / 60);
+                        $minutes = $totalMinutes % 60;
+                        $interval = new DateInterval('PT' . $hours . 'H' . $minutes . 'M');
+                        $work = $interval->format('%H h %I m');
         
                         // Prepare data for insertion into the database
                         $data = array(

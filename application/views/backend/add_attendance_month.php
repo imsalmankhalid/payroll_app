@@ -1,5 +1,6 @@
 <?php $this->load->view('backend/header'); ?>
 <?php $this->load->view('backend/sidebar'); ?>
+<?php $settingsvalue = $this->settings_model->GetSettingsValue(); ?>
 <style>
     .day-row {
     border: 1px solid #ddd;
@@ -57,7 +58,7 @@
                 <h4 class="m-b-0 text-white">Attendance</h4>
             </div>
             <div class="card-body">
-                <form method="post" action="Add_Attendance_Month" id="attendanceForm" enctype="multipart/form-data">
+                <form method="post" action="Add_Attendance_Month" id="attendanceForm" enctype="multipart/form-data" onsubmit="return validateForm()">
                     <div class="modal-body">
                         <div class="form-group">
                             <label>Employee</label>
@@ -151,6 +152,35 @@
                         </div>
                         
 <script type="text/javascript">
+
+    function validateForm() {
+        // Get all form elements
+        const form = document.getElementById('attendanceForm');
+        const inputs = form.querySelectorAll('input, select');
+
+        // Flag to check if any invalid entries are found
+        let hasInvalidEntries = false;
+
+        // Iterate over all form elements
+        for (const input of inputs) {
+            // Remove previous background highlight
+            input.style.backgroundColor = '';
+
+            // Check if text fields contain 'Invalid'
+            if (input.type === 'text' && input.value.includes('Invalid')) {
+                input.style.backgroundColor = 'lightyellow'; // Highlight invalid entry
+                hasInvalidEntries = true;
+            }
+        }
+
+        // Check if there are invalid entries
+        if (hasInvalidEntries) {
+            alert('Please correct the invalid entries before submitting.');
+            return false; // Prevent form submission
+        }
+
+        return true; // Allow form submission
+    }
 $(document).ready(function () {
     $(".holiday").click(function (e) {
         e.preventDefault(e);
@@ -228,7 +258,6 @@ function updateDays() {
 
             // Calculate the full date and day name
             var currentDate = new Date(selectedMonth + '-' + (day < 10 ? '0' + day : day));
-            console.log(currentDate);
 
             var dayName = currentDate.toLocaleDateString('de-DE', { weekday: 'long' });
             var currentDateString = currentDate.toISOString().split('T')[0];
@@ -241,15 +270,22 @@ function updateDays() {
 
             // Create input fields for sign-in and sign-out times using array notation
             var signInInput = document.createElement('div');
-            signInInput.className = 'col-md-3';
+            signInInput.className = 'col-sm-2';
             signInInput.innerHTML = '<label for="attendance[' + day + '][signin]">Sign In Time</label>' +
                 '<input type="time" name="attendance[' + day + '][signin]" class="form-control" placeholder="Sign In Time" required>';
 
             var signOutInput = document.createElement('div');
-            signOutInput.className = 'col-md-3';
+            signOutInput.className = 'col-sm-2';
             signOutInput.innerHTML = '<label for="attendance[' + day + '][signout]">Sign Out Time</label>' +
                 '<input type="time" name="attendance[' + day + '][signout]" class="form-control" placeholder="Sign Out Time" required>';
+            
+            var breaktime = document.createElement('div');
+            var value = "<?php echo $settingsvalue->breakTime; ?>";
+            breaktime.className = 'col-sm-2';
+            breaktime.innerHTML = '<label for="attendance[' + day + '][break]">Break Time</label>' +
+                '<input type="number" name="attendance[' + day + '][break]" class="form-control" placeholder="Break Time (minutes)" value="'+value+'" required>';
 
+            
             var durationOutput = document.createElement('div');
             durationOutput.className = 'col-md-2';
             durationOutput.innerHTML = '<label>Duration</label>' +
@@ -259,6 +295,7 @@ function updateDays() {
             rowContainer.appendChild(dateLabel);
             rowContainer.appendChild(signInInput);
             rowContainer.appendChild(signOutInput);
+            rowContainer.appendChild(breaktime);
             rowContainer.appendChild(durationOutput);
 
             // Append the row container to the daysContainer
@@ -267,15 +304,20 @@ function updateDays() {
             // Get references to the input fields
             var signInField = signInInput.querySelector('input');
             var signOutField = signOutInput.querySelector('input');
+            var breakField = breaktime.querySelector('input');
             var durationField = durationOutput.querySelector('input');
 
             // Add event listeners to calculate time difference
             signInField.addEventListener('input', function() {
-                calculateDuration(signInField, signOutField, durationField);
+                calculateDuration(signInField, signOutField, breakField, durationField);
+            });
+
+            breakField.addEventListener('input', function() {
+                calculateDuration(signInField, signOutField, breakField, durationField);
             });
 
             signOutField.addEventListener('input', function() {
-                calculateDuration(signInField, signOutField, durationField);
+                calculateDuration(signInField, signOutField, breakField, durationField);
             });
 
             // Disable input fields if the date is a holiday
@@ -283,6 +325,7 @@ function updateDays() {
                 signInField.disabled = true;
                 signOutField.disabled = true;
                 durationField.disabled = true;
+                breakField.disabled = true;
                 rowContainer.classList.add('holiday-row'); // Add holiday class for styling
             }
         })(day);
@@ -295,17 +338,18 @@ function isHoliday(date) {
     });
 }
 
-function calculateDuration(signInField, signOutField, durationField) {
+function calculateDuration(signInField, signOutField, breakField, durationField) {
     var signInTime = signInField.value;
     var signOutTime = signOutField.value;
+    var breakTime = breakField.value;
 
     if (signInTime && signOutTime) {
         // Create Date objects using today's date and the input times
         var today = new Date().toISOString().split('T')[0];
         var signInDate = new Date(today + 'T' + signInTime + ':00');
         var signOutDate = new Date(today + 'T' + signOutTime + ':00');
-        var diffMs = signOutDate - signInDate;
-
+        var breakMs = parseFloat(breakTime) * 60 * 1000; 
+        var diffMs = signOutDate - signInDate - breakMs;
         if (diffMs > 0) {
             var diffHrs = Math.floor(diffMs / 3600000);
             var diffMins = Math.floor((diffMs % 3600000) / 60000);

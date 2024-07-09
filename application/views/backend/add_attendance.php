@@ -1,5 +1,6 @@
 <?php $this->load->view('backend/header'); ?>
 <?php $this->load->view('backend/sidebar'); ?>
+<?php $settingsvalue = $this->settings_model->GetSettingsValue(); ?>
          <div class="page-wrapper">
             <div class="message"></div>
             <div class="row page-titles">
@@ -52,16 +53,26 @@
                                                 echo $new_date; } ?>" required>
                                                 <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
                                             </div>
-                                        <div class="form-group" >
-                                           <label class="m-t-20">Sign In Time</label>
-                                            <input class="form-control" name="signin" id="single-input" value="<?php if(!empty($attval->signin_time)) { echo  $attval->signin_time;} ?>" placeholder="Now" required>
-                                        </div>
-                                        <div class="form-group">
-                                        <label class="m-t-20">Sign Out Time</label>
-                                        <div class="input-group clockpicker">
-                                            <input type="text" name="signout" class="form-control" value="<?php if(!empty($attval->signout_time)) { echo  $attval->signout_time;} ?>">
-                                        </div>
-                                        </div> 
+                                            <div class="form-group d-flex align-items-center">
+                                                <div class="form-field mr-4">
+                                                    <label class="m-t-20">Sign In Time</label>
+                                                    <input class="form-control" name="signin" id="single-input" value="<?php if(!empty($attval->signin_time)) { echo  $attval->signin_time;} ?>" placeholder="Now" required autocomplete="off">
+                                                </div>
+                                                <div class="form-field mr-4">
+                                                    <label class="m-t-20">Sign Out Time</label>
+                                                    <div class="input-group clockpicker">
+                                                        <input type="text" name="signout" class="form-control" id="signout-time" value="<?php if(!empty($attval->signout_time)) { echo  $attval->signout_time;} ?>" autocomplete="off">
+                                                    </div>
+                                                </div>
+                                                <div class="form-field mr-4">
+                                                    <label class="m-t-20">Break Time</label>
+                                                    <input type="text" name="breakTime" class="form-control" id="break-time" value="<?php if(!empty($settingsvalue->breakTime)) { echo  $settingsvalue->breakTime;} ?>" autocomplete="off">
+                                                </div>
+                                                <div class="form-field">
+                                                    <label class="m-t-20">Duration</label>
+                                                    <input type="text" name="duration" id="duration" class="form-control" value="" readonly>
+                                                </div>
+                                            </div>
                                         <div class="form-group">
                                                     <label>Place</label>
                                                 <select class="form-control custom-select" data-placeholder="" tabindex="1" name="place" required>
@@ -122,7 +133,33 @@
                             </div>
                         </div>
 <script type="text/javascript">
+
+    // Function to calculate duration
+    function calculateDuration() {
+        var signInTime = document.getElementById('single-input').value;
+        var signOutTime = document.getElementById('signout-time').value;
+        var breakTime = parseFloat(document.getElementById('break-time').value) || 0; // Convert to float in case of decimal input
+
+        // Parse times into Date objects for calculation
+        var signIn = new Date("1970-01-01T" + signInTime + "Z");
+        var signOut = new Date("1970-01-01T" + signOutTime + "Z");
+
+        // Calculate duration in minutes
+        var duration = (signOut - signIn) / 1000 / 60 - breakTime;
+        // Convert duration to hours and minutes
+        var hours = Math.floor(duration / 60);
+        var minutes = Math.round(duration % 60);
+
+        // Format duration as '12h 30m'
+        var durationFormatted = hours + 'h ' + minutes + 'm';
+        // Update the duration input field
+        document.getElementById('duration').value = durationFormatted;
+    }
+    document.getElementById('single-input').addEventListener('input', calculateDuration);
+    document.getElementById('signout-time').addEventListener('input', calculateDuration);
+    document.getElementById('break-time').addEventListener('input', calculateDuration);
 $(document).ready(function () {
+
     $("#holiday").click(function (e) {
         console.log("Clicked");
         e.preventDefault(e);
