@@ -4,8 +4,7 @@ class Notice_model extends CI_Model{
 
 
     	function __consturct(){
-    	   parent::__construct();
-    	
+    	   parent::__construct();    	
     	}
     public function GetNotice(){
         $sql = "SELECT * FROM `notice` ORDER BY `notice`.`date` DESC;";

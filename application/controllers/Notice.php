@@ -12,6 +12,7 @@ class Notice extends CI_Controller {
         $this->load->model('notice_model');
         $this->load->model('settings_model');
         $this->load->model('leave_model');
+        $this->load->model('organization_model');
     }
 
     public function index() {
@@ -26,32 +27,36 @@ class Notice extends CI_Controller {
     public function All_notice() {
         if ($this->session->userdata('user_login_access') != False) {
             $data['notice'] = $this->notice_model->GetNotice();
+            $data['department'] = $this->organization_model->depselect();   
             $this->load->view('backend/notice', $data);
+             
         } else {
             redirect(base_url(), 'refresh');
         }        
     }
 
     public function Published_Notice() {
-        if($this->session->userdata('user_login_access') != False) {    
+        if ($this->session->userdata('user_login_access') != False) {
             $title = $this->input->post('title');
             $text = $this->input->post('text');
             $date = $this->input->post('nodate');
-
+            $depid = $this->input->post('depid');
+            
             $this->load->library('form_validation');
             $this->form_validation->set_error_delimiters();
             $this->form_validation->set_rules('title', 'title', 'trim|required|min_length[25]|max_length[150]|xss_clean');
             $this->form_validation->set_rules('text', 'text', 'trim|required|min_length[25]|max_length[500]|xss_clean');
-
+    
             if ($this->form_validation->run() == FALSE) {
                 echo validation_errors();
             } else {
                 $data = array(
                     'title' => $title,
                     'text' => $text,
-                    'date' => $date
+                    'date' => $date,
+                    'depid' => $depid
                 );
-
+    
                 if (!empty($_FILES['file_url']['name'])) {
                     $config = array(
                         'upload_path' => "./assets/images/notice",
@@ -59,10 +64,10 @@ class Notice extends CI_Controller {
                         'overwrite' => False,
                         'max_size' => "50720000"
                     );
-
+    
                     $this->load->library('upload', $config);
                     $this->upload->initialize($config);
-
+    
                     if ($this->upload->do_upload('file_url')) {
                         $path = $this->upload->data();
                         $data['file_url'] = $path['file_name'];
@@ -70,11 +75,12 @@ class Notice extends CI_Controller {
                         echo $this->upload->display_errors();
                     }
                 }
-
+    
                 $this->notice_model->Published_Notice($data);
                 echo "Successfully Added";
             }
         } else {
+            echo "User not logged in";
             redirect(base_url(), 'refresh');
         }
     }
@@ -85,9 +91,10 @@ class Notice extends CI_Controller {
             $title = $this->input->post('title');
             $text = $this->input->post('text');
             $date = $this->input->post('nodate');
-            $file_url = $_FILES['file_url']['name'];
-
-            if ($file_url) {
+            $depid = $this->input->post('depid');
+            $file_url = '';
+    
+            if (!empty($_FILES['file_url']['name'])) {
                 $file_name = $_FILES['file_url']['name'];
                 $config = array(
                     'file_name' => $file_name,
@@ -96,31 +103,36 @@ class Notice extends CI_Controller {
                     'overwrite' => False,
                     'max_size' => "50720000"
                 );
-
-                $this->load->library('Upload', $config);
-                $this->upload->initialize($config);                
+    
+                $this->load->library('upload', $config);
+                $this->upload->initialize($config);
                 if (!$this->upload->do_upload('file_url')) {
                     echo $this->upload->display_errors();
-                    #redirect("notice/All_notice");
+                    return; // Exit the function to prevent further execution
                 } else {
                     $path = $this->upload->data();
                     $file_url = $path['file_name'];
                 }
             }
-
+    
             $data = array(
                 'title' => $title,
                 'date' => $date,
                 'text' => $text,
-                'file_url' => $file_url
+                'depid' => $depid
             );
-
+    
+            if (!empty($file_url)) {
+                $data['file_url'] = $file_url;
+            }
+    
             $this->notice_model->Update_Notice($id, $data);
             echo "Notice updated successfully";
         } else {
             redirect(base_url(), 'refresh');
         }
     }
+    
 
     public function Delete_Notice($id) {
         if ($this->session->userdata('user_login_access') != False) {

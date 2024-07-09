@@ -13,7 +13,8 @@ class Dashboard extends CI_Controller {
         $this->load->model('settings_model');    
         $this->load->model('notice_model');    
         $this->load->model('project_model');    
-        $this->load->model('leave_model');    
+        $this->load->model('leave_model');
+        $this->load->model('organization_model');    
     }
     
 	public function index()
@@ -27,7 +28,8 @@ class Dashboard extends CI_Controller {
 	}
     function Dashboard(){
         if($this->session->userdata('user_login_access') != False) {
-        $this->load->view('backend/dashboard');
+            $data['department'] = $this->organization_model->depselect();
+            $this->load->view('backend/dashboard', $data);
         }
     else{
 		redirect(base_url() , 'refresh');

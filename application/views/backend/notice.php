@@ -30,22 +30,31 @@
                     <div class="card-header">
                         <h4 class="m-b-0 text-white"> Notice</h4>
                     </div>
+                    <?php
+                        // Create an associative array mapping depid to dep_name
+                        $departmentMap = [];
+                        foreach ($department as $value) {
+                            $departmentMap[$value->id] = $value->dep_name;
+                        }
+                        ?>
                     <div class="card-body">
                         <div class="table-responsive ">
                             <table id="example23" class="display nowrap table table-hover table-striped table-bordered" cellspacing="0" width="100%">
                                 <thead>
                                     <tr>
-                                        <th>Sl</th>
-                                        <th>Title</th>
-                                        <th>Text</th>
-                                        <th>File</th>
-                                        <th>Date</th>
-                                        <th>Actions</th>
+                                        <th style="width: 5%;">Sl</th>
+                                        <th style="width: 10%;">Department</th>
+                                        <th style="width: 20%;">Title</th>
+                                        <th style="width: 30%;">Text</th>
+                                        <th style="width: 10%;">File</th>
+                                        <th style="width: 10%;">Date</th>
+                                        <th style="width: 5%;">Actions</th>
                                     </tr>
                                 </thead>
                                 <tfoot>
                                     <tr>
                                         <th>Sl</th>
+                                        <th>Department</th>
                                         <th>Title</th>
                                         <th>Text</th>
                                         <th>File</th>
@@ -57,12 +66,13 @@
                                     <?php foreach($notice as $value): ?>
                                     <tr>
                                         <td><?php echo $value->id; ?></td>
-                                        <td><?php echo $value->title; ?></td>
-                                        <td><?php echo $value->text; ?></td>
+                                        <td style="max-width: 20px;"><?php echo isset($departmentMap[$value->depid]) ? $departmentMap[$value->depid] : ''; ?></td>
+                                        <td style="max-width: 50px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo $value->title; ?></td>
+                                        <td style="max-width: 150px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;"><?php echo $value->text; ?></td>
                                         <td><a href="<?php echo base_url(); ?>assets/images/notice/<?php echo $value->file_url; ?>" target="_blank"><?php echo $value->file_url; ?></a></td>
                                         <td><?php echo $value->date; ?></td>
                                         <td>
-                                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal" data-id="<?php echo $value->id; ?>" data-title="<?php echo $value->title; ?>" data-text="<?php echo $value->text; ?>" data-file="<?php echo $value->file_url; ?>" data-date="<?php echo $value->date; ?>">Edit</button>
+                                            <button class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editModal" data-id="<?php echo $value->id; ?>" data-title="<?php echo $value->title; ?>"  data-depid="<?php echo $value->depid; ?>" data-text="<?php echo $value->text; ?>" data-file="<?php echo $value->file_url; ?>" data-date="<?php echo $value->date; ?>">Edit</button>
                                             <button class="btn btn-danger btn-sm" onclick="deleteNotice(<?php echo $value->id; ?>)">Delete</button>
                                         </td>
                                     </tr>
@@ -84,6 +94,16 @@
                     </div>
                     <form role="form" method="post" action="Published_Notice" id="btnSubmit" enctype="multipart/form-data">
                         <div class="modal-body">
+                                <div class="form-group">
+                                <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" id="depid" name="depid" style="margin-top: 21px;" required>
+                                    <option value="#">Department</option>
+                                    <?php foreach ($department as $value): ?>
+                                    <option value="<?php echo $value->id; ?>">
+                                        <?php echo $value->dep_name; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <div class="form-group">
                                 <label for="message-text" class="control-label">Notice Title</label>
                                 <textarea class="form-control" name="title" id="message-text1" required></textarea>
@@ -109,9 +129,10 @@
                 </div>
             </div>
         </div>
+
         <!-- Edit Notice Modal -->
-        <div class="modal fade " id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
-            <div class="modal-dialog" role="document">
+        <div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h4 class="modal-title" id="editModalLabel">Edit Notice</h4>
@@ -121,12 +142,22 @@
                         <div class="modal-body">
                             <input type="hidden" name="id" id="edit-id">
                             <div class="form-group">
+                                <select class="form-control custom-select" id="edit-depid" name="depid" required>
+                                    <option value="#">Department</option>
+                                    <?php foreach ($department as $value): ?>
+                                    <option value="<?php echo $value->id; ?>">
+                                        <?php echo $value->dep_name; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="edit-title" class="control-label">Notice Title</label>
-                                <textarea class="form-control" name="title" id="edit-title" ></textarea>
+                                <textarea class="form-control" name="title" id="edit-title" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="edit-text" class="control-label">Notice Text</label>
-                                <textarea class="form-control" name="text" id="edit-text" ></textarea>
+                                <textarea class="form-control large-textarea" name="text" id="edit-text" required></textarea>
                             </div>
                             <div class="form-group">
                                 <label class="control-label">Document</label>
@@ -145,6 +176,7 @@
                 </div>
             </div>
         </div>
+
         <!-- /.modal -->
     </div>
 <?php $this->load->view('backend/footer'); ?>
@@ -157,12 +189,15 @@
         var text = button.data('text');
         var file = button.data('file');
         var date = button.data('date');
+        var depid = button.data('depid');
 
         var modal = $(this);
         modal.find('#edit-id').val(id);
         modal.find('#edit-title').val(title);
         modal.find('#edit-text').val(text);
+        modal.find('#edit-file').val(file);
         modal.find('#edit-date').val(date);
+        modal.find('#edit-depid').val(depid); // set the department id
     });
 
     function deleteNotice(id) {
