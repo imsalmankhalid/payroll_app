@@ -29,7 +29,18 @@ class Attendance extends CI_Controller
             redirect(base_url(), 'refresh');
         }
     }
-
+    public function AttendancebyMonth()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            #$data['employee'] = $this->employee_model->emselect();
+            $month=$this->input->get('month');
+            $em_id=$this->input->get('employee_id');
+            $data['attendancelist'] = $this->attendance_model->getAllAttendanceMonth($month,  $em_id);
+            echo json_encode($data);
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
     public function Save_Attendance()
     {
         if ($this->session->userdata('user_login_access') != False) {

@@ -24,6 +24,12 @@
   	$result = $query->result();
   	return $result;
 	}
+  public function emselectbydep($depid){
+    $sql = "SELECT * FROM `employee` WHERE `dep_id`='$depid'";
+    $query=$this->db->query($sql);
+  	$result = $query->result();
+  	return $result;
+	}
     public function emselectByID($emid){
     $sql = "SELECT * FROM `employee`
       WHERE `em_id`='$emid'";

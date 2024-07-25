@@ -849,10 +849,20 @@ class Employee extends CI_Controller {
 		$data['expvalue'] = $this->employee_model->GetExpValue($id);
 		echo json_encode($data);
         }
-    else{
-		redirect(base_url() , 'refresh');
-	} 
-        
+        else{
+            redirect(base_url() , 'refresh');
+        } 
+    }
+
+    public function emplbyDep(){
+        if($this->session->userdata('user_login_access') != False) {  
+		$id= $this->input->get('depid');
+		$data['employee'] = $this->employee_model->emselectbydep($id);
+		echo json_encode($data);
+        }
+        else{
+            redirect(base_url() , 'refresh');
+        } 
     }
     public function DisiplinaryByID(){
         if($this->session->userdata('user_login_access') != False) {  

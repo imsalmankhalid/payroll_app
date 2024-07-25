@@ -388,6 +388,25 @@ class Payroll extends CI_Controller {
         }        
     }
 
+    // Original one commented out above
+    public function Pay_List(){
+
+        if($this->session->userdata('user_login_access') != False) { 
+            
+        $data['salary_info'] = $this->payroll_model->getAllSalaryData();
+        $data['employee'] = $this->employee_model->emselect(); 
+        $data['department'] = $this->organization_model->depselect();
+
+        $this->load->view('backend/pay_list', $data);
+
+        }
+
+        else {
+
+            redirect(base_url() , 'refresh');
+        }        
+    }
+
     // Start Invoice
     public function Invoice(){
         if($this->session->userdata('user_login_access') != False) { 

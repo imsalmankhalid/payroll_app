@@ -96,7 +96,22 @@ class Attendance_model extends CI_Model
         $result = $query->result();
         return $result;
     }
+    public function getAllAttendanceMonth($month, $employee_id)
+    {
+        $sql = "SELECT `attendance`.`id`, `emp_id`, `atten_date`, `signin_time`, `signout_time`, 
+                TRUNCATE(ABS(( TIME_TO_SEC( TIMEDIFF( `signin_time`, `signout_time` ) ) )/3600), 1) AS Hours,
+                CONCAT(`first_name`, ' ', `last_name`) AS name
+                FROM `attendance`
+                LEFT JOIN `employee` ON `attendance`.`emp_id` = `employee`.`em_code`
+                WHERE `attendance`.`status` = 'A' 
+                AND (`attendance`.`emp_id` = '$employee_id')
+                AND MONTH(`atten_date`) = ?";
+        $query  = $this->db->query($sql, array($month));
+        $result = $query->result();
+        return $result;
+    }
 }
+
 
 
 ?>
