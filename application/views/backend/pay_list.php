@@ -1,97 +1,93 @@
 <?php $this->load->view('backend/header'); ?>
 <?php $this->load->view('backend/sidebar'); ?>
-         <div class="page-wrapper">
-            <div class="message"></div>
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h3 class="text-themecolor"><i class="fa fa-university" aria-hidden="true"></i> Payroll</h3>
-                </div>
-                <div class="col-md-7 align-self-center">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active"><i class="fa fa-university" aria-hidden="true"></i> Payroll</li>
-                    </ol>
-                </div>
+<div class="page-wrapper">
+    <div class="message"></div>
+    <div class="row page-titles">
+        <div class="col-md-5 align-self-center">
+            <h3 class="text-themecolor"><i class="fa fa-university" aria-hidden="true"></i> Gehaltsabrechnung</h3>
+        </div>
+        <div class="col-md-7 align-self-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Startseite</a></li>
+                <li class="breadcrumb-item active"><i class="fa fa-university" aria-hidden="true"></i> Gehaltsabrechnung</li>
+            </ol>
+        </div>
+    </div>
+    
+    <div class="container-fluid"> 
+        <div class="row m-b-10"> 
+            <div class="col-12">
+                <button type="button" class="btn btn-primary"><i class="fa fa-bars"></i><a href="<?php echo base_url(); ?>Payroll/Generate_salary" class="text-white"><i class="" aria-hidden="true"></i> Gehalt generieren</a></button>
             </div>
-            
-            <div class="container-fluid"> 
-                <div class="row m-b-10"> 
-                    <div class="col-12">
-<!--                        <button type="button" class="btn btn-info"><i class="fa fa-plus"></i><a data-toggle="modal" data-target="#TypeModal" data-whatever="@getbootstrap" class="text-white TypeModal"><i class="" aria-hidden="true"></i> Add Payroll </a></button>-->
-                        <button type="button" class="btn btn-primary"><i class="fa fa-bars"></i><a href="<?php echo base_url(); ?>Payroll/Generate_salary" class="text-white"><i class="" aria-hidden="true"></i>  Generate Payroll</a></button>
+        </div> 
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline-info">
+                    <div class="card-header">
+                        <h4 class="m-b-0 text-white"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Gehaltsliste                     
+                        </h4>
                     </div>
-                </div> 
-                <div class="row">
-                    <div class="col-12">
-
-                        <div class="card card-outline-info">
-                            <div class="card-header">
-                                <h4 class="m-b-0 text-white"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Payroll List                     
-                                </h4>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <select class="form-control custom-select" data-placeholder="Wählen Sie eine Abteilung" tabindex="1" id="depid" name="depid" style="margin-top: 21px;" required>
+                                <option value="#">Abteilung auswählen</option>
+                                <?php foreach ($department as $value): ?>
+                                <option value="<?php echo $value->id; ?>">
+                                    <?php echo $value->dep_name; ?>
+                                </option>
+                                <?php endforeach; ?>
+                                </select>
                             </div>
-                            <div class="card-body">
-                            <div class="row">
-                                <div class="form-group col-md-4">
-                                    <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" id="depid" name="depid" style="margin-top: 21px;" required>
-                                    <option value="#">Select Department
-                                    </option>
-                                    <?php foreach ($department as $value): ?>
-                                    <option value="<?php echo $value->id; ?>">
-                                        <?php echo $value->dep_name; ?>
-                                    </option>
-                                    <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" id="empid" name="empid" style="margin-top: 21px;" required>
-                                    <option value="#">Select Employee
-                                    </option>
-                                    <?php foreach ($employee as $value): ?>
-                                        <option value="<?php echo $value->em_code; ?>"><?php echo $value->first_name.' '.$value->last_name; ?></option>
-                                    </option>
-                                    <?php endforeach; ?>
-                                    </select>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label>
-                                    </label>
-                                        <div class='input-group date' id='monthPicker'>
-                                        <input type='text' name="datetime" class="form-control mydatetimepicker" placeholder="Month"/>
-                                        <span class="input-group-addon">
-                                            <span class="glyphicon glyphicon-calendar"></span>
-                                        </span>
-                                        </div>
-                                </div> 
+                            <div class="form-group col-md-4">
+                                <select class="form-control custom-select" data-placeholder="Wählen Sie einen Mitarbeiter" tabindex="1" id="empid" name="empid" style="margin-top: 21px;" required>
+                                <option value="#">Mitarbeiter auswählen</option>
+                                <?php foreach ($employee as $value): ?>
+                                    <option value="<?php echo $value->em_code; ?>"><?php echo $value->first_name.' '.$value->last_name; ?></option>
+                                <?php endforeach; ?>
+                                </select>
                             </div>
-                                <div class="table-responsive ">       
-                                    <table id="attendanceTable" class="table">
-                                        <thead>
-                                            <tr>
-                                                <th>Date</th>
-                                                <th>Day</th>
-                                                <th>Type</th>
-                                                <th>Sign In</th>
-                                                <th>Sign Out</th>
-                                                <th>Break</th>
-                                                <th>Working Hour</th>
-                                                <th>Normal Hours</th>
-                                                <th>Extra time</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- Data will be populated here via AJAX -->
-                                        </tbody>
-                                    </table>
+                            <div class="form-group col-md-4">
+                                <label></label>
+                                <div class='input-group date' id='monthPicker'>
+                                    <input type='text' name="datetime" class="form-control mydatetimepicker" placeholder="Monat"/>
+                                    <span class="input-group-addon">
+                                        <span class="glyphicon glyphicon-calendar"></span>
+                                    </span>
                                 </div>
-                            </div>
+                            </div> 
+                        </div>
+                        <div class="table-responsive">       
+                            <table id="attendanceTable" class="display nowrap table table-hover table-striped table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Datum</th>
+                                        <th>Tag</th>
+                                        <th>Art</th>
+                                        <th>Einloggen</th>
+                                        <th>Ausloggen</th>
+                                        <th>Pause</th>
+                                        <th>Arbeitszeit</th>
+                                        <th>Normale Stunden</th>
+                                        <th>Überstunden</th>
+                                        <th>ÜStd a 45 p. Woche</th>
+                                        <th>Nachtstunden</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Daten werden hier per AJAX eingefügt -->
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
                         
-<script type="text/javascript">  
+    <script type="text/javascript">
 $(document).ready(function() {
+
     $('#depid').on('change', function() {
         var depid = $(this).val();
         
@@ -103,7 +99,7 @@ $(document).ready(function() {
                 success: function(response) {
                     var data = JSON.parse(response);
                     $('#empid').empty();
-                    $('#empid').append('<option value="#">Select Employee</option>');
+                    $('#empid').append('<option value="#">Mitarbeiter auswählen</option>');
                     $.each(data.employee, function(key, value) {
                         $('#empid').append('<option value="' + value.em_code + '">' + value.first_name + ' ' + value.last_name + '</option>');
                     });
@@ -114,13 +110,13 @@ $(document).ready(function() {
             });
         } else {
             $('#empid').empty();
-            $('#empid').append('<option value="#">Select Employee</option>');
+            $('#empid').append('<option value="#">Mitarbeiter auswählen</option>');
         }
     });
 
     $('.mydatetimepicker').datepicker({
         format: "mm-yyyy",
-        viewMode: "months", 
+        viewMode: "months",
         minViewMode: "months",
         autoclose: true
     }).on('changeDate', function(e) {
@@ -129,35 +125,90 @@ $(document).ready(function() {
     });
 
     function fetchAttendanceData(month) {
-        // var selectedMonth = $('#monthSelect').val(); // This line is commented out because 'month' is passed as a parameter
-        var emid = $(empid).val();
+        var emid = $('#empid').val();
         $.ajax({
             url: '<?php echo base_url(); ?>attendance/AttendancebyMonth', 
             type: 'GET',
-            data: { month: month, employee_id:emid }, // Use 'month' parameter here instead of 'selectedMonth'
+            data: { month: month, employee_id: emid },
             success: function(response) {
 
                 var data = JSON.parse(response).attendancelist;
                 var tableBody = $('#attendanceTable tbody');
                 tableBody.empty(); // Clear the table body
 
+                var weeklyHours = 0;
+                var weekStart = moment(data[0].atten_date).startOf('isoWeek');
+                var weekEnd = moment(data[0].atten_date).endOf('isoWeek');
+
                 $.each(data, function(index, attendance) {
-                    var date = new Date(attendance.atten_date);
-                    var dayOfWeek = moment(date).format('dddd');
+                    var date = moment(attendance.atten_date);
+                    var dayOfWeek = date.format('dddd');
+                    var workHours = parseFloat(attendance.Hours);
+                    var nightHours = 0;
+                    var overtime = Math.max(0, workHours - 7.6);
+
+                    // Check if signout time falls in the night hours (22:00 to 06:00)
+                    var signoutTime = moment(attendance.signout_time, "HH:mm");
+                    if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
+                        nightHours = Math.min(workHours, (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
+                    }
+
+                    // Check if we are still in the same week
+                    if (date.isBetween(weekStart, weekEnd, null, '[]')) {
+                        weeklyHours += workHours;
+                    } else {
+                        // If we have moved to a new week, reset weekly hours and week range
+                        weekStart = date.startOf('isoWeek');
+                        weekEnd = date.endOf('isoWeek');
+                        weeklyHours = workHours;
+                    }
+
+                    var weeklyOvertime = weeklyHours > 45 ? (weeklyHours - 45) : 0;
+                    weeklyOvertime = weeklyOvertime > 0 ? weeklyOvertime.toFixed(2) : '';
+                    var breakTime = 0;
                     var row = '<tr>' +
                         '<td>' + attendance.atten_date + '</td>' +
                         '<td>' + dayOfWeek + '</td>' +
                         '<td>' + 'Type' + '</td>' +
                         '<td>' + attendance.signin_time + '</td>' +
                         '<td>' + attendance.signout_time + '</td>' +
-                        '<td>' + 'break' + '</td>' +
-                        '<td>' + attendance.Hours + '</td>' +
-                        '<td>7.6 </td>' +
-                        '<td>' +  + '</td>' +
-                        '<td><button class="action-btn">Action</button></td>' +
+                        '<td>' + breakTime.toFixed(2) + '</td>' +
+                        '<td>' + workHours.toFixed(2) + '</td>' +
+                        '<td>7.6</td>' +
+                        '<td>' + overtime.toFixed(2) + '</td>' +
+                        '<td>' + weeklyOvertime + '</td>' +
+                        '<td>' + nightHours.toFixed(2) + '</td>' +
                         '</tr>';
                     tableBody.append(row);
                 });
+                // Calculate sums for each column
+                var totalWorkHours = 0;
+                    var totalOvertime = 0;
+                    var totalWeeklyOvertime = 0;
+                    var totalNightHours = 0;
+
+                    data.forEach(function(attendance) {
+                        totalWorkHours += parseFloat(attendance.Hours);
+                        var overtime = Math.max(0, parseFloat(attendance.Hours) - 7.6);
+                        totalOvertime += overtime;
+                        if (parseFloat(attendance.Hours) > 45) {
+                            totalWeeklyOvertime += parseFloat(attendance.Hours) - 45;
+                        }
+                        var signoutTime = moment(attendance.signout_time, "HH:mm");
+                        if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
+                            totalNightHours += Math.min(parseFloat(attendance.Hours), (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
+                        }
+                    });
+                // Append the totals row at the end of the table
+                var totalsRow = '<tr>' +
+                    '<td colspan="6"><strong>Total</strong></td>' +
+                    '<td><strong>' + totalWorkHours.toFixed(2) + '</strong></td>' +
+                    '<td><strong>7.6</strong></td>' +
+                    '<td><strong>' + totalOvertime.toFixed(2) + '</strong></td>' +
+                    '<td><strong>' + totalWeeklyOvertime.toFixed(2) + '</strong></td>' +
+                    '<td><strong>' + totalNightHours.toFixed(2) + '</strong></td>' +
+                    '</tr>';
+                tableBody.append(totalsRow);
             },
             error: function(xhr, status, error) {
                 console.log('Error: ' + error);
@@ -166,139 +217,6 @@ $(document).ready(function() {
     }
 });
 
-
-$(document).ready(function() {    
-/*var today = new Date();
-var dd = today.getDate();
-var mm = today.getMonth()+1; //January is 0!
-var yyyy = today.getFullYear();
-
-if(dd<10) {
-    dd = '0'+dd
-} 
-
-if(mm<10) {
-    mm = '0'+mm
-} 
-
-today = mm + '/' + dd + '/' + yyyy;*/
-var d = new Date();
-var months = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-var m = months[d.getMonth()];    
-var y = d.getFullYear();    
-//document.write(today);    
-   var table = $('#example123').DataTable( {
-        "aaSorting": [[9,'desc']],
-        dom: 'Bfrtip',
-        buttons: [
-            {
-                extend: 'print',
-                title: 'Salary List'+'<br>'+ m +' '+ y,
-                customize: function ( win ) {
-                    $(win.document.body)
-                        .css( 'font-size', '50pt' )
-                        .prepend(
-                            '<img src="<?php echo base_url()?>assets/images/dRi_watermark.png" style="position:absolute;background-size:300px 300px; top:35%; left:27%;" />'
-                        );
-                    $(win.document.body)
-                        //.css( 'border', 'inherit' )
-                        .prepend(
-                            '<footer class="footer" style="border:inherit"><img src="<?php echo base_url();?>assets/images/signature_vice.png" style="position:absolute; top:0; left:0;" /><img src="<?php echo base_url();?>assets/images/signature_ceo.png" style="position:absolute; top:0; right:0;height:30px;" /></footer>'
-                        );
-                    $(win.document.body).find( 'h1' )
-                        .addClass( 'header' )
-                        .css( 'display', 'inharit' )
-                        .css( 'position', 'relative' )
-                        .css( 'float', 'right' )
-                        .css( 'font-size', '24px' )
-                        .css( 'font-weight', '700' )
-                        .css( 'margin-right', '15px' );
-                    $(win.document.body).find( 'div' )
-                        .addClass( 'header-top' )
-                        .css( 'background-position', 'left top' )
-                        .css( 'height', '100px' )
-                        .prepend(
-                            '<img src="<?php echo base_url()?>assets/images/dri_Logo.png" style="position:absolute;background-size:30%; top:0; left:0;" />'
-                        );
-                    $(win.document.body).find( 'div img' )
-                        .addClass( 'header-img' )
-                        .css( 'width', '300px' );
-                    $(win.document.body).find( 'h1' )
-                        .addClass( 'header' )
-                        .css( 'font-size', '25px' );
-
-                    $(win.document.body).find( 'table thead' )
-                        .addClass( 'compact' )
-                        .css( {
-                            color: '#000',
-                            margin: '20px',
-                            background: '#e8e8e8',
-
-                        });
- 
-                    $(win.document.body).find( 'table thead th' )
-                        .addClass( 'compact' )
-                        .css( {
-                            color: '#000',
-                            border: '1px solid #000',
-                            padding: '15px 12px',
-                            width: '8%'
-                        });
- 
-                    $(win.document.body).find( 'table tr td' )
-                        .addClass( 'compact' )
-                        .css( {
-                            color: '#000',
-                            margin: '20px',
-                            border: '1px solid #000'
-
-                        });
- 
-                    $(win.document.body).find( 'table thead th:nth-child(3)' )
-                        .addClass( 'compact' )
-                        .css( {
-                            width: '15%',
-                        });
- 
-                    $(win.document.body).find( 'table thead th:nth-child(1)' )
-                        .addClass( 'compact' )
-                        .css( {
-                            width: '1%',
-                        });
- 
-                    $(win.document.body).find( 'table thead th:nth-child(2)' )
-                        .addClass( 'compact' )
-                        .css( {
-                            width: '5%',
-                        });
- 
-                    $(win.document.body).find( 'table thead th:last-child' )
-                        .addClass( 'compact' )
-                        .css( {
-                            display: 'none',
-
-                        });
- 
-                    $(win.document.body).find( 'table tr td:last-child' )
-                        .addClass( 'compact' )
-                        .css( {
-                            display: 'none',
-
-                        });
-                }
-            }
-        ]
-    } );
-  
-} );
 </script>
+
 <?php $this->load->view('backend/footer'); ?>
-<script>
-    $('#salary123').DataTable({
-        "aaSorting": [[10,'desc']],
-        dom: 'Bfrtip',
-        buttons: [
-            'copy', 'csv', 'excel', 'pdf', 'print'
-        ]
-    });   
-</script>

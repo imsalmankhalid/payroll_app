@@ -155,29 +155,29 @@
 
     function validateForm() {
         // Get all form elements
-        const form = document.getElementById('attendanceForm');
-        const inputs = form.querySelectorAll('input, select');
+        // const form = document.getElementById('attendanceForm');
+        // const inputs = form.querySelectorAll('input, select');
 
-        // Flag to check if any invalid entries are found
-        let hasInvalidEntries = false;
+        // // Flag to check if any invalid entries are found
+        // let hasInvalidEntries = false;
 
-        // Iterate over all form elements
-        for (const input of inputs) {
-            // Remove previous background highlight
-            input.style.backgroundColor = '';
+        // // Iterate over all form elements
+        // for (const input of inputs) {
+        //     // Remove previous background highlight
+        //     input.style.backgroundColor = '';
 
-            // Check if text fields contain 'Invalid'
-            if (input.type === 'text' && input.value.includes('Invalid')) {
-                input.style.backgroundColor = 'lightyellow'; // Highlight invalid entry
-                hasInvalidEntries = true;
-            }
-        }
+        //     // Check if text fields contain 'Invalid'
+        //     if (input.type === 'text' && input.value.includes('Invalid')) {
+        //         input.style.backgroundColor = 'lightyellow'; // Highlight invalid entry
+        //         hasInvalidEntries = true;
+        //     }
+        // }
 
-        // Check if there are invalid entries
-        if (hasInvalidEntries) {
-            alert('Please correct the invalid entries before submitting.');
-            return false; // Prevent form submission
-        }
+        // // Check if there are invalid entries
+        // if (hasInvalidEntries) {
+        //     alert('Please correct the invalid entries before submitting.');
+        //     return false; // Prevent form submission
+        // }
 
         return true; // Allow form submission
     }
@@ -272,18 +272,18 @@ function updateDays() {
             var signInInput = document.createElement('div');
             signInInput.className = 'col-sm-2';
             signInInput.innerHTML = '<label for="attendance[' + day + '][signin]">Sign In Time</label>' +
-                '<input type="time" name="attendance[' + day + '][signin]" class="form-control" placeholder="Sign In Time" required>';
+                '<input type="time" name="attendance[' + day + '][signin]" class="form-control" placeholder="Sign In Time" >';
 
             var signOutInput = document.createElement('div');
             signOutInput.className = 'col-sm-2';
             signOutInput.innerHTML = '<label for="attendance[' + day + '][signout]">Sign Out Time</label>' +
-                '<input type="time" name="attendance[' + day + '][signout]" class="form-control" placeholder="Sign Out Time" required>';
+                '<input type="time" name="attendance[' + day + '][signout]" class="form-control" placeholder="Sign Out Time" >';
             
             var breaktime = document.createElement('div');
             var value = "<?php echo $settingsvalue->breakTime; ?>";
             breaktime.className = 'col-sm-2';
             breaktime.innerHTML = '<label for="attendance[' + day + '][break]">Break Time</label>' +
-                '<input type="number" name="attendance[' + day + '][break]" class="form-control" placeholder="Break Time (minutes)" value="'+value+'" required>';
+                '<input type="number" name="attendance[' + day + '][break]" class="form-control" placeholder="Break Time (minutes)" value="'+value+'" >';
 
             
             var durationOutput = document.createElement('div');

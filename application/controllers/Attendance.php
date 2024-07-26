@@ -205,9 +205,9 @@ class Attendance extends CI_Controller
         
                     // Perform necessary validations
                     $this->form_validation->set_rules('emid', 'Employee ID', 'trim|required|xss_clean');
-                    $this->form_validation->set_rules('attendance[' . $day . '][signin]', 'Sign In Time for Day ' . $day, 'trim|required|xss_clean');
-                    $this->form_validation->set_rules('attendance[' . $day . '][signout]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
-                    $this->form_validation->set_rules('attendance[' . $day . '][break]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][signin]', 'Sign In Time for Day ' . $day, 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][signout]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][break]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
                     // Add more rules as needed
         
                     if ($this->form_validation->run() == FALSE) {
@@ -217,14 +217,22 @@ class Attendance extends CI_Controller
                         // Process the data
                         $sin  = new DateTime($attdate . ' ' . $signin);
                         $sout = new DateTime($attdate . ' ' . $signout);
-                       
-                        $interval = $sin->diff($sout);  // Get the difference between sign in and sign out times
-                        $totalMinutes = ($interval->h * 60) + $interval->i - $break;  // Convert to minutes and subtract break time
                         
-                        $hours = floor($totalMinutes / 60);
-                        $minutes = $totalMinutes % 60;
-                        $interval = new DateInterval('PT' . $hours . 'H' . $minutes . 'M');
-                        $work = $interval->format('%H h %I m');
+                        $interval = $sin->diff($sout);  // Get the difference between sign in and sign out times
+                        if ($interval->s > 0 || $interval->i > 0 || $interval->h > 0 || $interval->days > 0) {
+                            $totalMinutes = ($interval->h * 60) + $interval->i - $break;  // Convert to minutes and subtract break time
+                            
+                            $hours = floor($totalMinutes / 60);
+                            $minutes = $totalMinutes % 60;
+                            $interval = new DateInterval('PT' . $hours . 'H' . $minutes . 'M');
+                            $work = $interval->format('%H h %I m');
+                        }
+                        else
+                        {
+                            $hours = 0;
+                            $minutes = 0;
+                            $work = 0;
+                        }
         
                         // Prepare data for insertion into the database
                         $data = array(
