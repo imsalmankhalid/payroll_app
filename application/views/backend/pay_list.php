@@ -87,6 +87,37 @@
                         
     <script type="text/javascript">
 $(document).ready(function() {
+    // Fetch holiday calendar and store it
+var holidays = [];
+
+$.ajax({
+    url: '<?php echo base_url(); ?>leave/Holidays_for_calendar',
+    method: 'GET',
+    data: '',
+    dataType: 'json',
+}).done(function(response) {
+    holidays = response;
+    console.log(holidays);
+});
+
+function getHolidayType(date) {
+    // Convert the date to YYYY-MM-DD format
+    var formattedDate = date.toISOString().split('T')[0];
+    
+    // Check if the date is a weekend (Saturday or Sunday)
+    var dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
+    if (dayOfWeek === 0 || dayOfWeek === 6) {
+        return ''; // Return empty for weekends
+    }
+    
+    // Find if the date matches any holiday
+    var holiday = holidays.find(function(holiday) {
+        return formattedDate >= holiday.from_date && formattedDate <= holiday.to_date;
+    });
+    
+    // Return holiday name if found, otherwise "Arbeitszeit"
+    return holiday ? holiday.holiday_name : 'Arbeitszeit';
+}
 
     $('#depid').on('change', function() {
         var depid = $(this).val();
@@ -139,16 +170,45 @@ $(document).ready(function() {
                 var weeklyHours = 0;
                 var weekStart = moment(data[0].atten_date).startOf('isoWeek');
                 var weekEnd = moment(data[0].atten_date).endOf('isoWeek');
-
+                var totalMonthHours = 0;
                 $.each(data, function(index, attendance) {
                     var date = moment(attendance.atten_date);
                     var dayOfWeek = date.format('dddd');
-                    var workHours = parseFloat(attendance.Hours);
-                    var nightHours = 0;
-                    var overtime = Math.max(0, workHours - 7.6);
+                    // Extracting work hours from the attendance
+                    var workHours = (parseFloat(attendance.Hours.match(/(\d+) h/)[1]) + parseFloat(attendance.Hours.match(/(\d+) m/)[1]) / 60);
+                    let [dh, dm] = attendance.work_hours.split(':').map(Number);
+                    let dayWorkHours = dh + dm / 60;
+                    totalMonthHours +=dayWorkHours;
+
+                    // Calculate overtime
+                    let overtime_ = workHours - dayWorkHours;
+                    
+                    let overtimeHours = Math.floor(overtime_);
+                    let overtimeMinutes = Math.round((Math.abs(overtime_ % 1) * 60));
+                    let overtime = `${overtimeHours} h ${overtimeMinutes} m`;
+
+                    // Handle negative overtime
+                    if (overtime_ < 0) {
+                        let totalMinutes = Math.abs(overtime_) * 60;
+                        let hours = Math.floor(totalMinutes / 60);
+                        let minutes = Math.round(totalMinutes % 60);  // Use Math.round() for proper rounding
+                        
+                        // Fix the edge case where rounding might give 60 minutes
+                        if (minutes === 60) {
+                            hours += 1;
+                            minutes = 0;
+                        }
+
+                        overtime = `- ${hours}h ${minutes}m`;
+                        overtime = `<td style="color: red;">${overtime}</td>`;
+                    } else {
+                        overtime = `<td>${overtime}</td>`;
+                    }
+                    
 
                     // Check if signout time falls in the night hours (22:00 to 06:00)
                     var signoutTime = moment(attendance.signout_time, "HH:mm");
+                    var nightHours = 0;
                     if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
                         nightHours = Math.min(workHours, (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
                     }
@@ -166,16 +226,17 @@ $(document).ready(function() {
                     var weeklyOvertime = weeklyHours > 45 ? (weeklyHours - 45) : 0;
                     weeklyOvertime = weeklyOvertime > 0 ? weeklyOvertime.toFixed(2) : '';
                     var breakTime = 0;
+                    var holidayType = getHolidayType(new Date(attendance.atten_date));
                     var row = '<tr>' +
                         '<td>' + attendance.atten_date + '</td>' +
                         '<td>' + dayOfWeek + '</td>' +
-                        '<td>' + 'Type' + '</td>' +
+                        '<td>' + holidayType + '</td>' +
                         '<td>' + attendance.signin_time + '</td>' +
                         '<td>' + attendance.signout_time + '</td>' +
-                        '<td>' + breakTime.toFixed(2) + '</td>' +
-                        '<td>' + workHours.toFixed(2) + '</td>' +
-                        '<td>7.6</td>' +
-                        '<td>' + overtime.toFixed(2) + '</td>' +
+                        '<td>' + attendance.break + '</td>' +
+                        '<td>' + attendance.Hours + '</td>' +
+                        '<td>' + attendance.work_hours + '</td>' +
+                        overtime  +
                         '<td>' + weeklyOvertime + '</td>' +
                         '<td>' + nightHours.toFixed(2) + '</td>' +
                         '</tr>';
@@ -186,6 +247,8 @@ $(document).ready(function() {
                     var totalOvertime = 0;
                     var totalWeeklyOvertime = 0;
                     var totalNightHours = 0;
+                    var totalWorkhours = 0;
+                    var totalBreakhours = 0;
 
                     data.forEach(function(attendance) {
                         totalWorkHours += parseFloat(attendance.Hours);
@@ -198,12 +261,14 @@ $(document).ready(function() {
                         if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
                             totalNightHours += Math.min(parseFloat(attendance.Hours), (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
                         }
+                        totalBreakhours += attendance.break;  
                     });
+
                 // Append the totals row at the end of the table
                 var totalsRow = '<tr>' +
                     '<td colspan="6"><strong>Total</strong></td>' +
                     '<td><strong>' + totalWorkHours.toFixed(2) + '</strong></td>' +
-                    '<td><strong>7.6</strong></td>' +
+                    '<td><strong>' + totalMonthHours + '</strong></td>' +
                     '<td><strong>' + totalOvertime.toFixed(2) + '</strong></td>' +
                     '<td><strong>' + totalWeeklyOvertime.toFixed(2) + '</strong></td>' +
                     '<td><strong>' + totalNightHours.toFixed(2) + '</strong></td>' +

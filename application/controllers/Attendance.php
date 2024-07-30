@@ -231,7 +231,7 @@ class Attendance extends CI_Controller
                         {
                             $hours = 0;
                             $minutes = 0;
-                            $work = 0;
+                            $work = $interval->format('%H h %I m');
                         }
         
                         // Prepare data for insertion into the database
@@ -242,6 +242,7 @@ class Attendance extends CI_Controller
                             'signout_time' => $signout,
                             'working_hour' => $work,
                             'place' => $place,
+                            'break' => $break,
                             'status' => 'A' // Assuming 'A' stands for 'Active'
                         );
         

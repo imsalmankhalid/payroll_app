@@ -105,7 +105,7 @@
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Contact Number </label>
-                                        <input type="text" name="contact" class="form-control" value="" placeholder="+8801231456" minlength="10" maxlength="15" required> 
+                                        <input type="text" name="contact" class="form-control" value="" placeholder="+491231456" minlength="10" maxlength="20" required> 
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Date Of Birth </label>

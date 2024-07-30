@@ -922,19 +922,21 @@ class Employee extends CI_Controller {
         $bima = $this->input->post('bima');
         $tax = $this->input->post('tax');
         $others = $this->input->post('others');
-        $this->load->library('form_validation');
-        $this->form_validation->set_error_delimiters();
-        $this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
+        $working_hours = $this->input->post('working_hours');
+        //$this->load->library('form_validation');
+        //$this->form_validation->set_error_delimiters();
+        //$this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
 
-        if ($this->form_validation->run() == FALSE) {
-            echo validation_errors();
-			#redirect("employee/view?I=" .base64_encode($em_id));
-			} else {
+        // if ($this->form_validation->run() == FALSE) {
+        //     echo validation_errors();
+		// 	#redirect("employee/view?I=" .base64_encode($em_id));
+		// 	} else {
             $data = array();
                 $data = array(
                     'emp_id' => $em_id,
                     'type_id' => $type,
-                    'total' => $total
+                    'total' => $total,
+                    'work_hours' => $working_hours
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);
@@ -993,7 +995,7 @@ class Employee extends CI_Controller {
                 $success = $this->employee_model->Add_Deduction($data2); 
                 echo "Successfully Added";
             }           
-        }
+        //}
         }
     else{
 		redirect(base_url() , 'refresh');
