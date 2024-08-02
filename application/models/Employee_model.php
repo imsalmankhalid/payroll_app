@@ -62,6 +62,30 @@
             return false;
         }
     }
+
+    public function Does_emid_exists($emid) {
+      $user = $this->db->dbprefix('employee');
+          $sql = "SELECT `em_id` FROM $user
+      WHERE `em_id`='$emid'";
+      $result=$this->db->query($sql);
+          if ($result->row()) {
+              return $result->row();
+          } else {
+              return false;
+          }
+      }
+
+      public function Does_emcode_exists($emcode) {
+        $user = $this->db->dbprefix('employee');
+            $sql = "SELECT `em_code` FROM $user
+        WHERE `em_code`='$emcode'";
+        $result=$this->db->query($sql);
+            if ($result->row()) {
+                return $result->row();
+            } else {
+                return false;
+            }
+        }
     public function Add($data){
         $this->db->insert('employee',$data);
     }

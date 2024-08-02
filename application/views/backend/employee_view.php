@@ -711,6 +711,7 @@
                                             <div class="form-group">
                                                 <div class="col-sm-12">
                                                     <input type="hidden" name="emid" value="<?php echo $basic->em_id; ?>"> 
+                                                    <input type="hidden" name="eid" value="<?php echo $basic->em_code; ?>"> 
                                                     <?php if(!empty($salaryvalue->salary_id)){ ?>    
                                                     <input type="hidden" name="sid" value="<?php echo $salaryvalue->salary_id; ?>">                                               <?php } ?> 
                                                     <?php if(!empty($salaryvalue->addi_id)){ ?>    

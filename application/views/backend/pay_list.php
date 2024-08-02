@@ -1,5 +1,20 @@
 <?php $this->load->view('backend/header'); ?>
 <?php $this->load->view('backend/sidebar'); ?>
+<style>
+    .display-6 {
+    font-size: 1.25rem;
+
+}
+.display-4 {
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.display-8 {
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+</style>
 <div class="page-wrapper">
     <div class="message"></div>
     <div class="row page-titles">
@@ -70,7 +85,6 @@
                                         <th>Arbeitszeit</th>
                                         <th>Normale Stunden</th>
                                         <th>Überstunden</th>
-                                        <th>ÜStd a 45 p. Woche</th>
                                         <th>Nachtstunden</th>
                                         <th>Verpflegung - full</th>
                                         <th>Verpflegung - less</th>
@@ -85,6 +99,73 @@
                 </div>
             </div>
         </div>
+        <div class="card card-outline-info m-t-20">
+    <div class="card-header">
+        <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Gehaltsabrechnung Zusammenfassung</h4>
+    </div>
+    <div class="card-body">
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong class="display-6">Arbeitstage des Monats (ohne Sa-So):</strong>
+                <span class="display-8" id="totalWorkDays"></span>
+            </div>
+            <div class="col-md-6">
+                <strong class="display-6">Gesamtarbeitsstunden im Monat:</strong>
+                <span class="display-8" id="totalWorkHours"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong class="display-6">Mitarbeiterarbeitsstunden im Monat:</strong>
+                <span class="display-8" id="employeeWorkHours"></span>
+            </div>
+            <div class="col-md-6">
+                <strong class="display-6">Überstunden des Mitarbeiters im Monat:</strong>
+                <span class="display-8" id="totalOvertime"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong class="display-6">Nachtstunden im Monat:</strong>
+                <span class="display-8" id="totalNightHours"></span>
+            </div>
+            <div class="col-md-6">
+                <strong class="display-6">Verpflegung für volle Arbeitsstunden:</strong>
+                <span class="display-8" id="mealsFull"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong class="display-6">Verpflegung für weniger als Arbeitsstunden:</strong>
+                <span class="display-8" id="mealsLess"></span>
+            </div>
+            <div class="col-md-6">
+                <strong class="display-6">Bonus (pro Arbeitsstunde):</strong>
+                <span class="display-8" id="bonus"></span>
+            </div>
+        </div>
+        <div class="row mb-3">
+            <div class="col-md-6">
+                <strong class="display-6">Stundenlohn:</strong>
+                <span class="display-6" id="hourlyPay"></span>
+            </div>
+            <div class="col-md-6">
+                <strong class="display-6">Abzüge:</strong>
+                <input type="text" id="deductions" class="form-control display-6" placeholder="Abzüge eingeben">
+            </div>
+        </div>
+        <div class="row mt-4">
+            <div class="col-md-12 d-flex align-items-center">
+                <strong class="display-4 text-success me-2">Gesamtgehalt:  </strong>
+                <div class="display-4 text-success" id="totalSalary"></div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+
+
     </div>
                         
 <script type="text/javascript">
@@ -175,10 +256,14 @@ function getHolidayType(date) {
             var weeklyHours = 0;
             var weekStart = moment(data[0].atten_date).startOf('isoWeek');
             var weekEnd = moment(data[0].atten_date).endOf('isoWeek');
-
+            var totalMealsLess = 0; // Total count for meals with total time < work hours
+            var totalMealsEqualOrMore = 0; // Total count for meals with total time >= work hours
+            var hourly_salary = 0;
             $.each(data, function(index, attendance) {
                 var date = moment(attendance.atten_date);
                 var dayOfWeek = date.format('dddd');
+
+                hourly_salary = attendance.total;
 
                 // Convert work hours and hours worked to minutes
                 var workHours = parseInt(attendance.Hours.match(/(\d+) h/)[1]) * 60 + parseInt(attendance.Hours.match(/(\d+) m/)[1]);
@@ -189,6 +274,7 @@ function getHolidayType(date) {
 
                 // Calculate overtime in minutes
                 var overtimeMinutes = workHours - dayWorkMinutes;
+                totalOvertimeMinutes += overtimeMinutes;
                 var overtime = formatTime(Math.abs(overtimeMinutes));
                 
                 if (overtimeMinutes < 0) {
@@ -221,21 +307,32 @@ function getHolidayType(date) {
                 totalNightMinutes += nightMinutes;
 
                 // Check if we are still in the same week
-                if (date.isBetween(weekStart, weekEnd, null, '[]')) {
-                    weeklyHours += workHours;
-                } else {
-                    // If we have moved to a new week, reset weekly hours and week range
+                // Check if we are still in the same week
+                if (!date.isBetween(weekStart, weekEnd, null, '[]')) {
+                    // Calculate weekly overtime before resetting
+                    if (weeklyHours > 45 * 60) {
+                        totalWeeklyOvertimeMinutes += (weeklyHours - 45 * 60);
+                    }
+                    // Reset weekly hours and week range
                     weekStart = date.startOf('isoWeek');
                     weekEnd = date.endOf('isoWeek');
-                    weeklyHours = workHours;
+                    weeklyHours = 0;
                 }
 
-                var weeklyOvertime = weeklyHours > 45 * 60 ? (weeklyHours - 45 * 60) : 0;
-                totalWeeklyOvertimeMinutes += weeklyOvertime;
-                var weeklyOvertimeDisplay = weeklyOvertime > 0 ? formatTime(weeklyOvertime) : '';
+                weeklyHours += workHours;
 
+                var weeklyOvertimeDisplay = weeklyHours > 45 * 60 ? formatTime(weeklyHours - 45 * 60) : '';
+                
                 totalWorkMinutes += workHours;
-                totalOvertimeMinutes += Math.max(0, overtimeMinutes);
+
+
+                // Determine daily meal based on total time vs work hours
+                var mealLess = workHours < dayWorkMinutes ? 4.09 : "";
+                var mealEqualOrMore = workHours >= dayWorkMinutes ? 4.09 : "";
+
+                // Update totals
+                totalMealsLess += mealLess !== "" ? parseFloat(mealLess) : 0;
+                totalMealsEqualOrMore += mealEqualOrMore !== "" ? parseFloat(mealEqualOrMore) : 0;
 
                 var row = '<tr>' +
                     '<td>' + attendance.atten_date + '</td>' +
@@ -247,8 +344,9 @@ function getHolidayType(date) {
                     '<td>' + attendance.Hours + '</td>' +
                     '<td>' + attendance.work_hours + '</td>' +
                     overtime  +
-                    '<td>' + weeklyOvertimeDisplay + '</td>' +
                     '<td>' + formatTime(nightMinutes) + '</td>' +
+                    '<td>' + mealLess + '</td>' +
+                    '<td>' + mealEqualOrMore + '</td>' +
                     '</tr>';
                 tableBody.append(row);
             });
@@ -259,10 +357,51 @@ function getHolidayType(date) {
                 '<td><strong>' + formatTime(totalWorkMinutes) + '</strong></td>' +
                 '<td><strong>' + formatTime(totalMonthMinutes) + '</strong></td>' +
                 '<td><strong>' + formatTime(totalOvertimeMinutes) + '</strong></td>' +
-                '<td><strong>' + formatTime(totalWeeklyOvertimeMinutes) + '</strong></td>' +
                 '<td><strong>' + formatTime(totalNightMinutes) + '</strong></td>' +
+                '<td><strong>' + totalMealsLess.toFixed(2) + '</strong></td>' +
+                '<td><strong>' + totalMealsEqualOrMore.toFixed(2) + '</strong></td>' +
                 '</tr>';
             tableBody.append(totalsRow);
+
+
+
+            // Calculate the total work days in the month excluding Sat-Sun
+            var totalWorkDays = data.filter(function (attendance) {
+                var dayOfWeek = moment(attendance.atten_date).day();
+                return dayOfWeek !== 0 && dayOfWeek !== 6; // Exclude Sundays (0) and Saturdays (6)
+            }).length;
+
+                // Bonus and hourly pay rate (These values should be set or fetched as needed)
+                var bonusPerHour = 1; // Example value, set or fetch as required
+ 
+                // Calculate the total work days in the month excluding Sat-Sun
+                var totalWorkDays = data.filter(function (attendance) {
+                    var dayOfWeek = moment(attendance.atten_date).day();
+                    return dayOfWeek !== 0 && dayOfWeek !== 6; // Exclude Sundays (0) and Saturdays (6)
+                }).length;
+
+                // Total salary calculation
+                var totalSalary = (totalMonthMinutes / 60) * hourly_salary + (totalOvertimeMinutes / 60) * bonusPerHour;
+
+                // Update the summary card values
+                $('#totalWorkDays').text(totalWorkDays);
+                $('#totalWorkHours').text(formatTime(totalWorkMinutes));
+                $('#employeeWorkHours').text(formatTime(totalMonthMinutes));
+                $('#totalOvertime').text(formatTime(totalOvertimeMinutes));
+                $('#totalNightHours').text(formatTime(totalNightMinutes));
+                $('#mealsFull').text(totalMealsEqualOrMore.toFixed(2));
+                $('#mealsLess').text(totalMealsLess.toFixed(2));
+                $('#bonus').text(bonusPerHour + ' €/h');
+                $('#hourlyPay').text(hourly_salary + ' €/h');
+                $('#totalSalary').text(totalSalary.toFixed(2) + ' €');
+
+                // Calculate total salary with deductions when deductions input changes
+                $('#deductions').on('input', function () {
+                    var deductions = parseFloat($(this).val()) || 0;
+                    var finalSalary = totalSalary - deductions;
+                    $('#totalSalary').text(finalSalary.toFixed(2) + ' €');
+                });
+
         },
         error: function(xhr, status, error) {
             console.log('Error: ' + error);

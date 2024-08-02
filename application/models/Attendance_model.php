@@ -99,12 +99,12 @@ class Attendance_model extends CI_Model
     public function getAllAttendanceMonth($month, $employee_id)
     {
         $sql = "SELECT `attendance`.`id`, `attendance`.`emp_id`, `atten_date`, `signin_time`, `signout_time`, `break`,
-                working_hour AS Hours,
+                working_hour AS Hours, `emp_salary`.`total`,
                 CONCAT(`first_name`, ' ', `last_name`) AS name, 
                 `emp_salary`.`work_hours`
                 FROM `attendance`
                 LEFT JOIN `employee` ON `attendance`.`emp_id` = `employee`.`em_code`
-                LEFT JOIN `emp_salary` ON `attendance`.`emp_id` = `emp_salary`.`emp_id`
+                LEFT JOIN `emp_salary` ON `attendance`.`emp_id` = `emp_salary`.`emp_code`
                 WHERE `attendance`.`status` = 'A' 
                 AND (`attendance`.`emp_id` = '$employee_id')
                 AND MONTH(`atten_date`) = ?";

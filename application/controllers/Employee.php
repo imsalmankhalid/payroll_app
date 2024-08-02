@@ -86,9 +86,13 @@ class Employee extends CI_Controller {
         if ($this->form_validation->run() == FALSE) {
             echo validation_errors();
 			} else {
-            if($this->employee_model->Does_email_exists($email) && $password != $confirm){
-                $this->session->set_flashdata('formdata','Email is already Exist or Check your password');
-                echo "Email is already Exist or Check your password";
+            if ($this->employee_model->Does_email_exists($email) ||
+                $this->employee_model->Does_emid_exists($username) ||
+                $this->employee_model->Does_emcode_exists($eid) ||
+                $password != $confirm) {
+                
+                $this->session->set_flashdata('formdata', 'Email or Employee ID or Employee Code already exists, or check your password');
+                echo "Email or Employee ID or Employee Code already exists, or check your password";
             } else {
             if($_FILES['image_url']['name']){
             $file_name = $_FILES['image_url']['name'];
@@ -922,6 +926,7 @@ class Employee extends CI_Controller {
         $bima = $this->input->post('bima');
         $tax = $this->input->post('tax');
         $others = $this->input->post('others');
+        $eid = $this->input->post('eid');
         $working_hours = $this->input->post('working_hours');
         //$this->load->library('form_validation');
         //$this->form_validation->set_error_delimiters();
@@ -936,7 +941,8 @@ class Employee extends CI_Controller {
                     'emp_id' => $em_id,
                     'type_id' => $type,
                     'total' => $total,
-                    'work_hours' => $working_hours
+                    'work_hours' => $working_hours,
+                    'emp_code' => $eid,
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);
