@@ -72,6 +72,8 @@
                                         <th>Überstunden</th>
                                         <th>ÜStd a 45 p. Woche</th>
                                         <th>Nachtstunden</th>
+                                        <th>Verpflegung - full</th>
+                                        <th>Verpflegung - less</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -85,7 +87,7 @@
         </div>
     </div>
                         
-    <script type="text/javascript">
+<script type="text/javascript">
 $(document).ready(function() {
     // Fetch holiday calendar and store it
 var holidays = [];
@@ -154,133 +156,127 @@ function getHolidayType(date) {
         var selectedMonth = e.format('mm');
         fetchAttendanceData(selectedMonth);
     });
-
     function fetchAttendanceData(month) {
-        var emid = $('#empid').val();
-        $.ajax({
-            url: '<?php echo base_url(); ?>attendance/AttendancebyMonth', 
-            type: 'GET',
-            data: { month: month, employee_id: emid },
-            success: function(response) {
+    var emid = $('#empid').val();
+    $.ajax({
+        url: '<?php echo base_url(); ?>attendance/AttendancebyMonth', 
+        type: 'GET',
+        data: { month: month, employee_id: emid },
+        success: function(response) {
+            var data = JSON.parse(response).attendancelist;
+            var tableBody = $('#attendanceTable tbody');
+            tableBody.empty(); // Clear the table body
 
-                var data = JSON.parse(response).attendancelist;
-                var tableBody = $('#attendanceTable tbody');
-                tableBody.empty(); // Clear the table body
+            var totalWorkMinutes = 0;
+            var totalMonthMinutes = 0;
+            var totalOvertimeMinutes = 0;
+            var totalWeeklyOvertimeMinutes = 0;
+            var totalNightMinutes = 0;
+            var weeklyHours = 0;
+            var weekStart = moment(data[0].atten_date).startOf('isoWeek');
+            var weekEnd = moment(data[0].atten_date).endOf('isoWeek');
 
-                var weeklyHours = 0;
-                var weekStart = moment(data[0].atten_date).startOf('isoWeek');
-                var weekEnd = moment(data[0].atten_date).endOf('isoWeek');
-                var totalMonthHours = 0;
-                $.each(data, function(index, attendance) {
-                    var date = moment(attendance.atten_date);
-                    var dayOfWeek = date.format('dddd');
-                    // Extracting work hours from the attendance
-                    var workHours = (parseFloat(attendance.Hours.match(/(\d+) h/)[1]) + parseFloat(attendance.Hours.match(/(\d+) m/)[1]) / 60);
-                    let [dh, dm] = attendance.work_hours.split(':').map(Number);
-                    let dayWorkHours = dh + dm / 60;
-                    totalMonthHours +=dayWorkHours;
+            $.each(data, function(index, attendance) {
+                var date = moment(attendance.atten_date);
+                var dayOfWeek = date.format('dddd');
 
-                    // Calculate overtime
-                    let overtime_ = workHours - dayWorkHours;
-                    
-                    let overtimeHours = Math.floor(overtime_);
-                    let overtimeMinutes = Math.round((Math.abs(overtime_ % 1) * 60));
-                    let overtime = `${overtimeHours} h ${overtimeMinutes} m`;
+                // Convert work hours and hours worked to minutes
+                var workHours = parseInt(attendance.Hours.match(/(\d+) h/)[1]) * 60 + parseInt(attendance.Hours.match(/(\d+) m/)[1]);
+                var [dh, dm] = attendance.work_hours.split(':').map(Number);
+                var dayWorkMinutes = dh * 60 + dm;
 
-                    // Handle negative overtime
-                    if (overtime_ < 0) {
-                        let totalMinutes = Math.abs(overtime_) * 60;
-                        let hours = Math.floor(totalMinutes / 60);
-                        let minutes = Math.round(totalMinutes % 60);  // Use Math.round() for proper rounding
-                        
-                        // Fix the edge case where rounding might give 60 minutes
-                        if (minutes === 60) {
-                            hours += 1;
-                            minutes = 0;
-                        }
+                totalMonthMinutes += dayWorkMinutes;
 
-                        overtime = `- ${hours}h ${minutes}m`;
-                        overtime = `<td style="color: red;">${overtime}</td>`;
-                    } else {
-                        overtime = `<td>${overtime}</td>`;
-                    }
-                    
+                // Calculate overtime in minutes
+                var overtimeMinutes = workHours - dayWorkMinutes;
+                var overtime = formatTime(Math.abs(overtimeMinutes));
+                
+                if (overtimeMinutes < 0) {
+                    overtime = `<td style="color: red;">- ${overtime}</td>`;
+                } else {
+                    overtime = `<td>${overtime}</td>`;
+                }
 
-                    // Check if signout time falls in the night hours (22:00 to 06:00)
-                    var signoutTime = moment(attendance.signout_time, "HH:mm");
-                    var nightHours = 0;
-                    if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
-                        nightHours = Math.min(workHours, (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
-                    }
+                // Calculate night hours (22:00 to 06:00)
+                var signoutTime = moment(attendance.signout_time, "HH:mm");
+                var signInTime = moment(attendance.signin_time, "HH:mm");
+                var nightMinutes = 0;
+                
+                // Define boundaries for night hours
+                const nightStart = moment('22:00', 'HH:mm'); // 10 PM
+                const nightEnd = moment('06:00', 'HH:mm');   // 6 AM
 
-                    // Check if we are still in the same week
-                    if (date.isBetween(weekStart, weekEnd, null, '[]')) {
-                        weeklyHours += workHours;
-                    } else {
-                        // If we have moved to a new week, reset weekly hours and week range
-                        weekStart = date.startOf('isoWeek');
-                        weekEnd = date.endOf('isoWeek');
-                        weeklyHours = workHours;
-                    }
+                // Case 1: Add minutes from sign-in time if before 6 AM
+                if (signInTime.isBefore(nightEnd)) {
+                    if (signInTime.isBefore(nightStart)) {
+                        // Sign-in time is before 10 PM
+                        nightMinutes += nightEnd.diff(signInTime, 'minutes');;
+                    } 
+                }
+                if (signoutTime.isAfter(nightStart)) {
+                        // Sign-out time is after 10 PM
+                        nightMinutes += signoutTime.diff(nightStart, 'minutes');
+                } 
 
-                    var weeklyOvertime = weeklyHours > 45 ? (weeklyHours - 45) : 0;
-                    weeklyOvertime = weeklyOvertime > 0 ? weeklyOvertime.toFixed(2) : '';
-                    var breakTime = 0;
-                    var holidayType = getHolidayType(new Date(attendance.atten_date));
-                    var row = '<tr>' +
-                        '<td>' + attendance.atten_date + '</td>' +
-                        '<td>' + dayOfWeek + '</td>' +
-                        '<td>' + holidayType + '</td>' +
-                        '<td>' + attendance.signin_time + '</td>' +
-                        '<td>' + attendance.signout_time + '</td>' +
-                        '<td>' + attendance.break + '</td>' +
-                        '<td>' + attendance.Hours + '</td>' +
-                        '<td>' + attendance.work_hours + '</td>' +
-                        overtime  +
-                        '<td>' + weeklyOvertime + '</td>' +
-                        '<td>' + nightHours.toFixed(2) + '</td>' +
-                        '</tr>';
-                    tableBody.append(row);
-                });
-                // Calculate sums for each column
-                var totalWorkHours = 0;
-                    var totalOvertime = 0;
-                    var totalWeeklyOvertime = 0;
-                    var totalNightHours = 0;
-                    var totalWorkhours = 0;
-                    var totalBreakhours = 0;
+                totalNightMinutes += nightMinutes;
 
-                    data.forEach(function(attendance) {
-                        totalWorkHours += parseFloat(attendance.Hours);
-                        var overtime = Math.max(0, parseFloat(attendance.Hours) - 7.6);
-                        totalOvertime += overtime;
-                        if (parseFloat(attendance.Hours) > 45) {
-                            totalWeeklyOvertime += parseFloat(attendance.Hours) - 45;
-                        }
-                        var signoutTime = moment(attendance.signout_time, "HH:mm");
-                        if (signoutTime.hour() >= 22 || signoutTime.hour() < 6) {
-                            totalNightHours += Math.min(parseFloat(attendance.Hours), (signoutTime.hour() < 6 ? signoutTime.hour() + 24 : signoutTime.hour()) - 22);
-                        }
-                        totalBreakhours += attendance.break;  
-                    });
+                // Check if we are still in the same week
+                if (date.isBetween(weekStart, weekEnd, null, '[]')) {
+                    weeklyHours += workHours;
+                } else {
+                    // If we have moved to a new week, reset weekly hours and week range
+                    weekStart = date.startOf('isoWeek');
+                    weekEnd = date.endOf('isoWeek');
+                    weeklyHours = workHours;
+                }
 
-                // Append the totals row at the end of the table
-                var totalsRow = '<tr>' +
-                    '<td colspan="6"><strong>Total</strong></td>' +
-                    '<td><strong>' + totalWorkHours.toFixed(2) + '</strong></td>' +
-                    '<td><strong>' + totalMonthHours + '</strong></td>' +
-                    '<td><strong>' + totalOvertime.toFixed(2) + '</strong></td>' +
-                    '<td><strong>' + totalWeeklyOvertime.toFixed(2) + '</strong></td>' +
-                    '<td><strong>' + totalNightHours.toFixed(2) + '</strong></td>' +
+                var weeklyOvertime = weeklyHours > 45 * 60 ? (weeklyHours - 45 * 60) : 0;
+                totalWeeklyOvertimeMinutes += weeklyOvertime;
+                var weeklyOvertimeDisplay = weeklyOvertime > 0 ? formatTime(weeklyOvertime) : '';
+
+                totalWorkMinutes += workHours;
+                totalOvertimeMinutes += Math.max(0, overtimeMinutes);
+
+                var row = '<tr>' +
+                    '<td>' + attendance.atten_date + '</td>' +
+                    '<td>' + dayOfWeek + '</td>' +
+                    '<td>' + getHolidayType(new Date(attendance.atten_date)) + '</td>' +
+                    '<td>' + attendance.signin_time + '</td>' +
+                    '<td>' + attendance.signout_time + '</td>' +
+                    '<td>' + attendance.break + '</td>' +
+                    '<td>' + attendance.Hours + '</td>' +
+                    '<td>' + attendance.work_hours + '</td>' +
+                    overtime  +
+                    '<td>' + weeklyOvertimeDisplay + '</td>' +
+                    '<td>' + formatTime(nightMinutes) + '</td>' +
                     '</tr>';
-                tableBody.append(totalsRow);
-            },
-            error: function(xhr, status, error) {
-                console.log('Error: ' + error);
-            }
-        });
-    }
+                tableBody.append(row);
+            });
+
+            // Append the totals row at the end of the table
+            var totalsRow = '<tr>' +
+                '<td colspan="6"><strong>Total</strong></td>' +
+                '<td><strong>' + formatTime(totalWorkMinutes) + '</strong></td>' +
+                '<td><strong>' + formatTime(totalMonthMinutes) + '</strong></td>' +
+                '<td><strong>' + formatTime(totalOvertimeMinutes) + '</strong></td>' +
+                '<td><strong>' + formatTime(totalWeeklyOvertimeMinutes) + '</strong></td>' +
+                '<td><strong>' + formatTime(totalNightMinutes) + '</strong></td>' +
+                '</tr>';
+            tableBody.append(totalsRow);
+        },
+        error: function(xhr, status, error) {
+            console.log('Error: ' + error);
+        }
+    });
+}
 });
+function formatTime(minutes) {
+    let hours = Math.floor(minutes / 60);
+    let mins = Math.round(minutes % 60);
+    return `${hours} h ${mins} m`;
+}
+
+
 
 </script>
 
