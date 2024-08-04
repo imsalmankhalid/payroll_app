@@ -654,17 +654,27 @@
 			                                        <label>Amount</label>
 			                                        <input type="text" name="total" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> class="form-control form-control-line total" placeholder="total salary" value="<?php if(!empty($salaryvalue->total)) echo $salaryvalue->total ?>" required> 
 			                                    </div>
+                                                </div><div class="row">
                                                     <!-- Working Hours -->
                                                     <div class="form-group col-sm-1 m-t-5">
                                                         <label>Working Hours</label>
-                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value="07:36" required>
-                                                    </div>
-
-                                                    <!-- Button -->
-                                                    <div class="form-group col-md-2 m-t-5 d-flex align-items-end">
-                                                        <button <?php if($this->session->userdata('user_type') == 'EMPLOYEE'){ ?> disabled <?php } ?> type="submit" class="btn btn-success">Add Salary</button>
+                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> required>
                                                     </div>
                                                 </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-1 m-t-5">
+                                                        <label>Hourly Bonus</label>
+                                                        <input  type="number" name="hourly_bonus" class="form-control form-control-line" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> required>
+                                                    </div>
+                                                    <div class="form-group col-sm-1 m-t-5">
+                                                        <label>Hourly Bonus - 2</label>
+                                                        <input  type="number" name="hourly_bonus2" class="form-control form-control-line" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> required>
+                                                    </div>
+                                                </div>
+                                                <!-- Button -->
+                                                <div class="form-group col-md-2 m-t-5 d-flex align-items-end">
+                                                        <button <?php if($this->session->userdata('user_type') == 'EMPLOYEE'){ ?> disabled <?php } ?> type="submit" class="btn btn-info pull-right"> <i class="fa fa-check"></i>Update Salary</button>
+                                                    </div> 
                                                  <div style="visibility: hidden;">
                                                     <h3 class="card-title">Addition</h3>
                                                     <div class="row">
@@ -722,7 +732,8 @@
                                                     
                                                 </div>
                                                 <?php } ?>
-                                            </div>                                                		                                    
+                                            </div>   
+                                            		                                    
 			                                    </form>
 				                        </div>
                                     </div>

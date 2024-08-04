@@ -928,6 +928,8 @@ class Employee extends CI_Controller {
         $others = $this->input->post('others');
         $eid = $this->input->post('eid');
         $working_hours = $this->input->post('working_hours');
+        $bonus1 = $this->input->post('hourly_bonus');
+        $bonus2 = $this->input->post('hourly_bonus2');
         //$this->load->library('form_validation');
         //$this->form_validation->set_error_delimiters();
         //$this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
@@ -943,6 +945,8 @@ class Employee extends CI_Controller {
                     'total' => $total,
                     'work_hours' => $working_hours,
                     'emp_code' => $eid,
+                    'hourly_bonus' => $bonus1,
+                    'hourly_bonus2' => $bonus2,
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);

@@ -96,9 +96,15 @@
                                             </div>
                                         </div>
                                         <div class="form-group clearfix">
-                                            <label for="title" class="col-md-3">Break Time</label>
-                                            <div class="col-md-9">
-                                                <input type="text" class="form-control" name="breakTime" value="<?php echo $settingsvalue->breakTime; ?>" id="title" placeholder="Break time (minutes)">
+                                            <label for="title" class="col-sm-1">Break Time</label>
+                                            <div class="col-sm-1">
+                                                <input type="number" class="form-control" name="breakTime" value="<?php echo $settingsvalue->breakTime; ?>" id="title" placeholder="Break time (minutes)">
+                                            </div>
+                                        </div>  
+                                        <div class="form-group clearfix">
+                                            <label for="title" class="col-sm-1">Meal Amount</label>
+                                            <div class="col-sm-1">
+                                                <input type="number" class="form-control" name="mealAmount" value="<?php echo $settingsvalue->mealAmount; ?>" id="mealAmount" placeholder="Meal Amount (Eur)">
                                             </div>
                                         </div>  
                                         <div class="form-group clearfix">

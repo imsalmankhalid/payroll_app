@@ -37,7 +37,7 @@
         </div> 
         <div class="row">
             <div class="col-12">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info" >
                     <div class="card-header">
                         <h4 class="m-b-0 text-white"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Gehaltsliste                     
                         </h4>
@@ -99,71 +99,124 @@
                 </div>
             </div>
         </div>
-        <div class="card card-outline-info m-t-20">
-    <div class="card-header">
-        <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Gehaltsabrechnung Zusammenfassung</h4>
-    </div>
-    <div class="card-body">
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong class="display-6">Arbeitstage des Monats (ohne Sa-So):</strong>
-                <span class="display-8" id="totalWorkDays"></span>
-            </div>
-            <div class="col-md-6">
-                <strong class="display-6">Gesamtarbeitsstunden im Monat:</strong>
-                <span class="display-8" id="totalWorkHours"></span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong class="display-6">Mitarbeiterarbeitsstunden im Monat:</strong>
-                <span class="display-8" id="employeeWorkHours"></span>
-            </div>
-            <div class="col-md-6">
-                <strong class="display-6">Überstunden des Mitarbeiters im Monat:</strong>
-                <span class="display-8" id="totalOvertime"></span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong class="display-6">Nachtstunden im Monat:</strong>
-                <span class="display-8" id="totalNightHours"></span>
-            </div>
-            <div class="col-md-6">
-                <strong class="display-6">Verpflegung für volle Arbeitsstunden:</strong>
-                <span class="display-8" id="mealsFull"></span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong class="display-6">Verpflegung für weniger als Arbeitsstunden:</strong>
-                <span class="display-8" id="mealsLess"></span>
-            </div>
-            <div class="col-md-6">
-                <strong class="display-6">Bonus (pro Arbeitsstunde):</strong>
-                <span class="display-8" id="bonus"></span>
-            </div>
-        </div>
-        <div class="row mb-3">
-            <div class="col-md-6">
-                <strong class="display-6">Stundenlohn:</strong>
-                <span class="display-6" id="hourlyPay"></span>
-            </div>
-            <div class="col-md-6">
-                <strong class="display-6">Abzüge:</strong>
-                <input type="text" id="deductions" class="form-control display-6" placeholder="Abzüge eingeben">
-            </div>
-        </div>
-        <div class="row mt-4">
-            <div class="col-md-12 d-flex align-items-center">
-                <strong class="display-4 text-success me-2">Gesamtgehalt:  </strong>
-                <div class="display-4 text-success" id="totalSalary"></div>
+        <div class="container-fluid">
+    <div class="row">
+        <!-- First Card: Gehaltsabrechnung Zusammenfassung -->
+        <div class="col-md-3">
+            <div class="card card-outline-info">
+                <div class="card-header">
+                    <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Gehaltsabrechnung Zusammenfassung</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Beschreibung</th>
+                                <th>Wert</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Arbeitstage des Monats (ohne Sa-So):</strong></td>
+                                <td id="totalWorkDays" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Gesamtarbeitsstunden im Monat:</strong></td>
+                                <td id="totalWorkHours" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Mitarbeiterarbeitsstunden im Monat:</strong></td>
+                                <td id="normalWorkHours" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Überstunden des Mitarbeiters im Monat:</strong></td>
+                                <td id="totalOvertime" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Nachtstunden im Monat:</strong></td>
+                                <td id="totalNightHours" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Verpflegung für volle Arbeitsstunden:</strong></td>
+                                <td id="mealsFull" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Verpflegung für weniger als Arbeitsstunden:</strong></td>
+                                <td id="mealsLess" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bonus (pro Arbeitsstunde):</strong></td>
+                                <td id="bonus" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bonus 2:</strong></td>
+                                <td id="bonus2" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Stundenlohn:</strong></td>
+                                <td id="hourlyPay" class="display-8"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
+        <!-- Second Card: Calculations -->
+        <div class="col-md-6">
+            <div class="card card-outline-info">
+                <div class="card-header">
+                    <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Calculation Summary</h4>
+                </div>
+                <div class="card-body">
+                    <table class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Value</th>
+                                <th>Amount (€)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>Gesamtarbeitsstunden im Monat:</strong></td>
+                                <td id="totalWorkHours2" class="display-8"></td>
+                                <td id="totalWorkHours_amt" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Verpflegung für volle Arbeitsstunden:</strong></td>
+                                <td id="mealsFull2" class="display-8"></td>
+                                <td id="mealsFull_amt" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bonus (pro Arbeitsstunde):</strong></td>
+                                <td id="bonus_1" class="display-8"></td>
+                                <td id="bonus_amt" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Bonus 2:</strong></td>
+                                <td id="bonus_2" class="display-8"></td>
+                                <td id="bonus2_amt" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Abzüge:</strong></td>
+                                <td><input type="text" id="deductions" class="form-control" placeholder="Abzüge eingeben"></td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td><strong class="display-4 text-success">Gesamtgehalt:</strong></td>
+                                <td></td>
+                                <td><div class="display-4 text-success" id="totalSalary"></div></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
-
 
 
     </div>
@@ -259,11 +312,15 @@ function getHolidayType(date) {
             var totalMealsLess = 0; // Total count for meals with total time < work hours
             var totalMealsEqualOrMore = 0; // Total count for meals with total time >= work hours
             var hourly_salary = 0;
+            var bonusPerHour = 0;
+            var bonusPerHour2 = 0;
             $.each(data, function(index, attendance) {
                 var date = moment(attendance.atten_date);
                 var dayOfWeek = date.format('dddd');
 
                 hourly_salary = attendance.total;
+                bonusPerHour = attendance.hourly_bonus;
+                bonusPerHour2 = attendance.hourly_bonus2;
 
                 // Convert work hours and hours worked to minutes
                 var workHours = parseInt(attendance.Hours.match(/(\d+) h/)[1]) * 60 + parseInt(attendance.Hours.match(/(\d+) m/)[1]);
@@ -371,27 +428,37 @@ function getHolidayType(date) {
                 return dayOfWeek !== 0 && dayOfWeek !== 6; // Exclude Sundays (0) and Saturdays (6)
             }).length;
 
-                // Bonus and hourly pay rate (These values should be set or fetched as needed)
-                var bonusPerHour = 1; // Example value, set or fetch as required
- 
                 // Calculate the total work days in the month excluding Sat-Sun
                 var totalWorkDays = data.filter(function (attendance) {
                     var dayOfWeek = moment(attendance.atten_date).day();
                     return dayOfWeek !== 0 && dayOfWeek !== 6; // Exclude Sundays (0) and Saturdays (6)
                 }).length;
 
-                // Total salary calculation
-                var totalSalary = (totalMonthMinutes / 60) * hourly_salary + (totalOvertimeMinutes / 60) * bonusPerHour;
+                // Convert minutes to hours
+                var totalHours = totalWorkMinutes / 60;
 
+                // Calculate total salary with floating-point precision
+                var totalSalary = (totalHours * hourly_salary) +
+                                (totalHours * bonusPerHour) +
+                                (totalHours * bonusPerHour2) +
+                                (totalMealsEqualOrMore + totalMealsLess);
                 // Update the summary card values
                 $('#totalWorkDays').text(totalWorkDays);
-                $('#totalWorkHours').text(formatTime(totalWorkMinutes));
-                $('#employeeWorkHours').text(formatTime(totalMonthMinutes));
+                $('#totalWorkHours').text(formatTime(totalWorkMinutes));$('#totalWorkHours2').text(hourly_salary +' x ' + formatTime(totalWorkMinutes));
+                $('#totalWorkHours_amt').text(((totalWorkMinutes / 60) * hourly_salary).toFixed(2));
+                $('#normalWorkHours').text(formatTime(totalMonthMinutes));
                 $('#totalOvertime').text(formatTime(totalOvertimeMinutes));
                 $('#totalNightHours').text(formatTime(totalNightMinutes));
                 $('#mealsFull').text(totalMealsEqualOrMore.toFixed(2));
+                $('#mealsFull2').text(totalMealsEqualOrMore.toFixed(2) + ' + ' + totalMealsLess.toFixed(2));
+                $('#mealsFull_amt').text((totalMealsEqualOrMore + totalMealsLess).toFixed(2));
                 $('#mealsLess').text(totalMealsLess.toFixed(2));
                 $('#bonus').text(bonusPerHour + ' €/h');
+                $('#bonus_1').text(bonusPerHour + '  x ' + formatTime(totalWorkMinutes));
+                $('#bonus_2').text(bonusPerHour2 + '  x ' + formatTime(totalWorkMinutes));
+                $('#bonus_amt').text(((totalWorkMinutes / 60) * bonusPerHour).toFixed(2));
+                $('#bonus2_amt').text(((totalWorkMinutes / 60) * bonusPerHour2).toFixed(2));
+                $('#bonus2').text(bonusPerHour2 + ' €/h');
                 $('#hourlyPay').text(hourly_salary + ' €/h');
                 $('#totalSalary').text(totalSalary.toFixed(2) + ' €');
 
