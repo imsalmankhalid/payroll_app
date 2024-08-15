@@ -10113,14 +10113,17 @@ button.btn.btn-info.btn-lg.btn-logino {
 /*end progress bar*/
 .message{
 	position: fixed;
+    padding: 20px;
     top: 50px;
-    right: 25px;
+    right: 50px;
     padding: 15px;
     z-index: 9999999;
     background-color: #4CAF50;
     color: #fff;
-    max-width: 350px;
+    max-width: 550px;
     height: auto;
+    font-weight: bold;
+    font-size: 24px;
     display:none;
 }
 
