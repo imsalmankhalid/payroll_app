@@ -69,6 +69,21 @@ class Attendance extends CI_Controller
             redirect(base_url(), 'refresh');
         }
     }
+    public function Edit_Attendance_Month()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            $data['employee'] = $this->employee_model->emselectAttendance();
+            $data['data'] = $this->employee_model->emselect();
+            $id               = $this->input->get('A');
+            if (!empty($id)) {
+                $data['attval'] = $this->attendance_model->em_attendanceFor($id);
+            }
+            #$data['attendancelist'] = $this->attendance_model->em_attendance();
+            $this->load->view('backend/edit_attendance_month', $data);
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
     public function Attendance_Report()
     {
         if ($this->session->userdata('user_login_access') != False) {
@@ -256,6 +271,99 @@ class Attendance extends CI_Controller
                 redirect(base_url(), 'refresh');
             }    
 
+    }
+    public function Upd_Attendance_Month()
+    {
+            if ($this->session->userdata('user_login_access') != False) {
+                $this->load->library('form_validation');
+                $this->form_validation->set_error_delimiters();
+                
+                // Get data from $_POST array
+                $em_id   = $this->input->post('emid');
+                $selected_month = $this->input->post('selected_month');
+                $place = $this->input->post('place');
+                
+                // Iterate through each day's attendance data
+                foreach ($this->input->post('attendance') as $day => $data) {
+                    $attdate = $selected_month . '-' . str_pad($day, 2, '0', STR_PAD_LEFT); // Format the date
+                    $signin  = $data['signin'];
+                    $signout = $data['signout'];
+                    $break = $data['break'];
+        
+                    // Perform necessary validations
+                    $this->form_validation->set_rules('emid', 'Employee ID', 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][signin]', 'Sign In Time for Day ' . $day, 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][signout]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
+                    //$this->form_validation->set_rules('attendance[' . $day . '][break]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
+                    // Add more rules as needed
+        
+                    if ($this->form_validation->run() == FALSE) {
+                        echo validation_errors();
+                        // Handle validation errors
+                    } else {
+                        // Process the data
+                        $sin  = new DateTime($attdate . ' ' . $signin);
+                        $sout = new DateTime($attdate . ' ' . $signout);
+                        
+                        $interval = $sin->diff($sout);  // Get the difference between sign in and sign out times
+                        if ($interval->s > 0 || $interval->i > 0 || $interval->h > 0 || $interval->days > 0) {
+                            $totalMinutes = ($interval->h * 60) + $interval->i - $break;  // Convert to minutes and subtract break time
+                            
+                            $hours = floor($totalMinutes / 60);
+                            $minutes = $totalMinutes % 60;
+                            $interval = new DateInterval('PT' . $hours . 'H' . $minutes . 'M');
+                            $work = $interval->format('%H h %I m');
+                        }
+                        else
+                        {
+                            $hours = 0;
+                            $minutes = 0;
+                            $work = $interval->format('%H h %I m');
+                        }
+        
+                        // Prepare data for insertion into the database
+                        $data = array(
+                            'asignin_time' => $signin,
+                            'signout_time' => $signout,
+                            'working_hour' => $work,
+                            'place' => $place,
+                            'break' => $break,
+                            'status' => 'A' // Assuming 'A' stands for 'Active'
+                        );
+        
+                        // Insert data into the database
+                        $res = $this->attendance_model->Update_AttendanceData($em_id,$attdate, $data);
+
+                        echo "Attendance data Updated successfully for Day " . $day . ".<br>";
+                    }
+                }
+            } else {
+                redirect(base_url(), 'refresh');
+            }    
+
+    }
+
+    public function Cpy_Attendance_Month()
+    {
+            if ($this->session->userdata('user_login_access') != False) {
+                $this->load->library('form_validation');
+                $this->form_validation->set_error_delimiters();
+                
+                // Get data from $_POST array
+                $em_id   = $this->input->post('emid');
+                $em_id2   = $this->input->post('emid2');
+                $selected_month = $this->input->post('selected_month2');
+                $place = $this->input->post('place');
+
+                // Insert data into the database
+                $res = $this->attendance_model->Copy_AttendanceData($em_id,$em_id2, $selected_month);
+                if($res)
+                    echo $res;
+                else
+                    echo "Attendance data copied successfully";
+            } else {
+                redirect(base_url(), 'refresh');
+            } 
     }
 
     public function Add_Attendance_Month2()

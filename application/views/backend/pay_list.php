@@ -287,7 +287,7 @@ function getHolidayType(date) {
         minViewMode: "months",
         autoclose: true
     }).on('changeDate', function(e) {
-        var selectedMonth = e.format('mm');
+        var selectedMonth = e.format('yyyy-mm');
         fetchAttendanceData(selectedMonth);
     });
     function fetchAttendanceData(month) {

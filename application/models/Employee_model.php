@@ -24,6 +24,15 @@
   	$result = $query->result();
   	return $result;
 	}
+
+  
+  public function emselectAttendance(){
+    $sql = "SELECT DISTINCT a.emp_id AS em_code, e.first_name, e.last_name FROM attendance a JOIN employee e ON a.emp_id = e.em_code;";
+    $query=$this->db->query($sql);
+  	$result = $query->result();
+  	return $result;
+	}
+
   public function emselectbydep($depid){
     $sql = "SELECT * FROM `employee` WHERE `dep_id`='$depid'";
     $query=$this->db->query($sql);

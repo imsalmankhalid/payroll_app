@@ -172,7 +172,7 @@ abstract class CI_DB_driver {
 	 *
 	 * @var	bool
 	 */
-	public $db_debug		= FALSE;
+	public $db_debug		= TRUE;
 
 	/**
 	 * Benchmark time
@@ -1779,7 +1779,8 @@ abstract class CI_DB_driver {
 		}
 
 		$error =& load_class('Exceptions', 'core');
-		echo $error->show_error($heading, $message, 'error_db');
+		//echo $error->show_error($heading, $message, 'error_db');
+		echo  htmlspecialchars(implode("<br>", $message));
 		exit(8); // EXIT_DATABASE
 	}
 

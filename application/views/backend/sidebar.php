@@ -62,6 +62,7 @@
                                 <li><a href="<?php echo base_url(); ?>attendance/Attendance">Attendance List </a></li>
                                 <li><a href="<?php echo base_url(); ?>attendance/Save_Attendance">Add Attendance - Day</a></li>
                                 <li><a href="<?php echo base_url(); ?>attendance/Save_Attendance_Month">Add Attendance - Month</a></li>
+                                <li><a href="<?php echo base_url(); ?>attendance/Edit_Attendance_Month">Edit Attendance</a></li>
                                 <li><a href="<?php echo base_url(); ?>attendance/Attendance_Report">Attendance Report </a></li>
                             </ul>
                         </li>
