@@ -35,8 +35,7 @@ body {
     font-family: 'Open Sans', sans-serif
     margin: 0;
     overflow-x: hidden;
-    color: #67757c;
-    font-weight: 300
+    font-weight: 400
 }
 
 html {
@@ -797,7 +796,7 @@ html body .bg-white {
 
 .table td,
 .table th {
-    border-color: #f3f1f1
+    border-color: #757575
 }
 
 .table th,

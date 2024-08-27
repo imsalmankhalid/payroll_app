@@ -225,7 +225,7 @@ $('form').each(function() {
                 console.log(response);            
                 $(".message").fadeIn('fast').delay(30000).fadeOut('fast').html(response);
                 $('form').trigger("reset");
-                window.setTimeout(function(){location.reload()},3000);
+                window.setTimeout(function(){location.reload()},10000);
             },
             error: function (e) {
                 console.log(e);

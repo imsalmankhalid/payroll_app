@@ -164,8 +164,8 @@ class Leave extends CI_Controller
     public function EmApplication()
     {
         if ($this->session->userdata('user_login_access') != False) {
-            $emid                = $this->session->userdata('user_login_id');
-            $data['employee']    = $this->employee_model->emselectByID($emid);
+            $emid                = $this->session->userdata('user_id');
+            $data['employee']    = $this->employee_model->emselectByCode($emid);
             $data['leavetypes']  = $this->leave_model->GetleavetypeInfo();
             $data['application'] = $this->leave_model->GetallApplication($emid);
             $this->load->view('backend/leave_apply', $data);
@@ -434,7 +434,7 @@ class Leave extends CI_Controller
 
     public function EmLeavesheet()
     {
-        $emid              = $this->session->userdata('user_login_id');
+        $emid              = $this->session->userdata('user_id');
         $data              = array();
         $data['embalance'] = $this->leave_model->EmLeavesheet($emid);
         $this->load->view('backend/leavebalance', $data);

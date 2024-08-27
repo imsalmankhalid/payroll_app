@@ -20,6 +20,7 @@
                 <!-- Row -->
                 <div class="row">
                     <!-- Column -->
+                    <?php if($this->session->userdata('user_type') == 'SUPER ADMIN'): ?>
                     <div class="col-lg-3 col-md-6">
                         <div class="card">
                             <div class="card-body">
@@ -36,7 +37,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div><?php endif; ?>
                     <!-- Column -->
                     <!-- Column -->
                     <div class="col-lg-3 col-md-6">
@@ -47,7 +48,14 @@
                                     <div class="m-l-10 align-self-center">
                                         <h3 class="m-b-0">
                                              <?php 
-                                                    $this->db->where('leave_status','Approve');
+                                                    $userType = $this->session->userdata('user_type');
+                                                    if (strpos($userType, 'ADMIN') === false) {
+                                                        // Apply a condition when the user is not a 'SUPER ADMIN'
+                                                        $this->db->where('em_id', $this->session->userdata('user_login_id'));
+                                                    } else {
+                                                        // If the user is a 'SUPER ADMIN', select all records
+                                                        $this->db->select('*');
+                                                    }
                                                     $this->db->from("emp_leave");
                                                     echo $this->db->count_all_results();
                                                 ?> Leaves

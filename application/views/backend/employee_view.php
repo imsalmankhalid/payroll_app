@@ -632,7 +632,7 @@
 				                                </form>
                                     </div>
                                 </div>
-
+                                <?php if($this->session->userdata('user_type') == 'SUPER ADMIN'): ?>
                                 <div class="tab-pane" id="salary" role="tabpanel">
                                     <div class="card">
 				                        <div class="card-body">
@@ -656,19 +656,23 @@
 			                                    </div>
                                                 </div><div class="row">
                                                     <!-- Working Hours -->
-                                                    <div class="form-group col-sm-1 m-t-5">
+                                                    <div class="form-group col-sm-3 m-t-5">
                                                         <label>Working Hours</label>
                                                         <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> required>
                                                     </div>
                                                 </div>
                                                 <div class="row">
-                                                    <div class="form-group col-sm-1 m-t-5">
+                                                    <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus</label>
-                                                        <input  type="number" name="hourly_bonus" class="form-control form-control-line" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> required>
+                                                        <input  type="number" name="hourly_bonus" class="form-control" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> required>
                                                     </div>
-                                                    <div class="form-group col-sm-1 m-t-5">
+                                                    <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus - 2</label>
-                                                        <input  type="number" name="hourly_bonus2" class="form-control form-control-line" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> required>
+                                                        <input  type="number" name="hourly_bonus2" class="form-control" placeholder="Hourly Bonus 2" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> required>
+                                                    </div>
+                                                    <div class="form-group col-sm-3 m-t-5">
+                                                        <label>Daily Bonus</label>
+                                                        <input  type="number" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
                                                     </div>
                                                 </div>
                                                 <!-- Button -->
@@ -737,7 +741,7 @@
 			                                    </form>
 				                        </div>
                                     </div>
-                                </div>                                
+                                </div><?php endif; ?>                              
                             </div>
                         </div>
                     </div>

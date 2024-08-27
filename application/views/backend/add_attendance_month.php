@@ -30,80 +30,91 @@
 }
 
 </style>
-         <div class="page-wrapper">
-            <div class="message"></div>
-            <div class="row page-titles">
-                <div class="col-md-5 align-self-center">
-                    <h3 class="text-themecolor">Monthly  Attendance</h3>
-                </div>
-                <div class="col-md-7 align-self-center">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
-                        <li class="breadcrumb-item active">Monthly Attendance</li>
-                    </ol>
-                </div>
+<div class="page-wrapper">
+    <div class="message"></div>
+    <div class="row page-titles">
+        <div class="col-md-5 align-self-center">
+            <h3 class="text-themecolor">Monthly Attendance</h3>
+        </div>
+        <div class="col-md-7 align-self-center">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="javascript:void(0)">Home</a></li>
+                <li class="breadcrumb-item active">Monthly Attendance</li>
+            </ol>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="row m-b-10"> 
+            <div class="col-12">
+                <button type="button" class="btn btn-info">
+                    <i class="fa fa-plus"></i>
+                    <a href="<?php echo base_url(); ?>attendance/Attendance" class="text-white">
+                        <i class="" aria-hidden="true"></i>  Attendance List
+                    </a>
+                </button>
+                <button type="button" class="btn btn-primary">
+                    <i class="fa fa-bars"></i>
+                    <a href="<?php echo base_url(); ?>leave/Application" class="text-white">
+                        <i class="" aria-hidden="true"></i>  Leave Application
+                    </a>
+                </button>
             </div>
-            <div class="container-fluid">
-
-                <div class="row m-b-10"> 
-                    <div class="col-12">
-                        <button type="button" class="btn btn-info"><i class="fa fa-plus"></i><a href="<?php echo base_url(); ?>attendance/Attendance" class="text-white"><i class="" aria-hidden="true"></i>  Attendance List</a></button>
-                        <button type="button" class="btn btn-primary"><i class="fa fa-bars"></i><a href="<?php echo base_url(); ?>leave/Application" class="text-white"><i class="" aria-hidden="true"></i>  Leave Application</a></button>
+        </div>  
+        <div class="row">
+            <div class="col-12">
+                <div class="card card-outline-info">
+                    <div class="card-header">
+                        <h4 class="m-b-0 text-white">Attendance</h4>
                     </div>
-                </div>  
-                <div class="row">
-    <div class="col-12">
-        <div class="card card-outline-info">
-            <div class="card-header">
-                <h4 class="m-b-0 text-white">Attendance</h4>
-            </div>
-            <div class="card-body">
-                <form method="post" action="Add_Attendance_Month" id="attendanceForm" enctype="multipart/form-data" onsubmit="return validateForm()">
-                    <div class="modal-body">
-                        <div class="form-group">
-                            <label>Employee</label>
-                            <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" name="emid" required>
-                                <?php if (!empty($attval->em_code)) : ?>
-                                    <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
-                                <?php else : ?>
-                                    <option value="#">Select Here</option>
-                                    <?php foreach ($employee as $value) : ?>
-                                        <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
-                                    <?php endforeach; ?>
-                                <?php endif; ?>
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                        <label>Select Month: </label>
-                        <div id="" class="input-group date">
-                            <input name="selected_month" class="form-control" type="month" required onchange="updateDays()">
-                        </div>
-                        <div id="days-container">
-                            <!-- Dynamic input fields for days will be appended here -->
-                        </div>
-
-                        <div class="form-group">
-                            <label>Place</label>
-                            <select class="form-control custom-select" data-placeholder="" tabindex="1" name="place" required>
-                                <option value="office" <?php if (isset($attval->place) && $attval->place == "office") {
-                                                            echo "selected";
-                                                        } ?>>Office</option>
-                                <option value="field" <?php if (isset($attval->place) && $attval->place == "field") {
-                                                            echo "selected";
-                                                        } ?>>Field</option>
-                            </select>
-                        </div>
+                    <div class="card-body">
+                        <form method="post" action="Add_Attendance_Month" id="attendanceForm" enctype="multipart/form-data" onsubmit="return validateForm()">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Employee</label>
+                                        <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" name="emid" required>
+                                            <?php if (!empty($attval->em_code)) : ?>
+                                                <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
+                                            <?php else : ?>
+                                                <option value="#">Select Here</option>
+                                                <?php foreach ($employee as $value) : ?>
+                                                    <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Select Month:</label>
+                                        <div class="input-group date">
+                                            <input name="selected_month" class="form-control" type="month" required onchange="updateDays()">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label>Place</label>
+                                        <select class="form-control custom-select" data-placeholder="" tabindex="1" name="place" required>
+                                            <option value="office" <?php if (isset($attval->place) && $attval->place == "office") { echo "selected"; } ?>>Office</option>
+                                            <option value="field" <?php if (isset($attval->place) && $attval->place == "field") { echo "selected"; } ?>>Field</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div id="days-container" class="col-12">
+                                    <!-- Dynamic input fields for days will be appended here -->
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <input type="hidden" name="id" value="<?php if (!empty($attval->id)) { echo $attval->id; } ?>" class="form-control" id="recipient-name1">
+                                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                                <button type="submit" id="attendanceUpdate" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
                     </div>
-                    </div>
-                    <div class="modal-footer">
-                        <input type="hidden" name="id" value="<?php if (!empty($attval->id)) {
-                                                                    echo  $attval->id;
-                                                                } ?>" class="form-control" id="recipient-name1">
-                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                        <button type="submit" id="attendanceUpdate" class="btn btn-primary">Submit</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
@@ -155,29 +166,29 @@
 
     function validateForm() {
         // Get all form elements
-        // const form = document.getElementById('attendanceForm');
-        // const inputs = form.querySelectorAll('input, select');
+        const form = document.getElementById('attendanceForm');
+        const inputs = form.querySelectorAll('input, select');
 
-        // // Flag to check if any invalid entries are found
-        // let hasInvalidEntries = false;
+        // Flag to check if any invalid entries are found
+        let hasInvalidEntries = false;
 
-        // // Iterate over all form elements
-        // for (const input of inputs) {
-        //     // Remove previous background highlight
-        //     input.style.backgroundColor = '';
+        // Iterate over all form elements
+        for (const input of inputs) {
+            // Remove previous background highlight
+            input.style.backgroundColor = '';
 
-        //     // Check if text fields contain 'Invalid'
-        //     if (input.type === 'text' && input.value.includes('Invalid')) {
-        //         input.style.backgroundColor = 'lightyellow'; // Highlight invalid entry
-        //         hasInvalidEntries = true;
-        //     }
-        // }
+            // Check if text fields contain 'Invalid'
+            if (input.type === 'text' && input.value.includes('Invalid')) {
+                input.style.backgroundColor = 'lightyellow'; // Highlight invalid entry
+                hasInvalidEntries = true;
+            }
+        }
 
-        // // Check if there are invalid entries
-        // if (hasInvalidEntries) {
-        //     alert('Please correct the invalid entries before submitting.');
-        //     return false; // Prevent form submission
-        // }
+        // Check if there are invalid entries
+        if (hasInvalidEntries) {
+            alert('Please correct the invalid entries before submitting.');
+            return false; // Prevent form submission
+        }
 
         return true; // Allow form submission
     }

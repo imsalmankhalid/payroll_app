@@ -18,6 +18,7 @@
             <div class="message"></div>
     <?php $degvalue = $this->employee_model->getdesignation(); ?>
     <?php $depvalue = $this->employee_model->getdepartment(); ?>
+    <?php $empId = $this->employee_model->getEmpID(); ?>
             <div class="container-fluid">
                 <div class="row m-b-10"> 
                     <div class="col-12">
@@ -35,10 +36,15 @@
                                <?php echo $this->upload->display_errors(); ?>
                                
                                <?php echo $this->session->flashdata('formdata'); ?>
-                               <?php echo $this->session->flashdata('feedback'); ?>
+                               
                             <div class="card-body">
 
                                 <form class="row" method="post" action="Save" enctype="multipart/form-data">
+                                    <div class="form-group col-md-3 m-t-20">
+                                            <label>Employee Code </label>
+                                            <input type="text" class="form-control form-control-line" placeholder="ID" value="<?php echo htmlspecialchars($empId[0]); ?>" disabled> 
+                                            <input type="hidden" name="eid" value="<?php echo htmlspecialchars($empId[0]); ?>">
+                                    </div>
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>First Name</label>
                                         <input type="text" name="fname" class="form-control form-control-line" placeholder="Your first name" minlength="2" required > 
@@ -46,10 +52,6 @@
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Last Name </label>
                                         <input type="text" id="" name="lname" class="form-control form-control-line" value="" placeholder="Your last name" minlength="2" required> 
-                                    </div>
-                                    <div class="form-group col-md-3 m-t-20">
-                                        <label>Employee Code </label>
-                                        <input type="text" name="eid" class="form-control form-control-line" placeholder="ID"> 
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Department</label>
@@ -104,8 +106,8 @@
                                         <input type="text" name="nid" class="form-control" value="" placeholder="" minlength="10" required> 
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
-                                        <label>Contact Number </label>
-                                        <input type="text" name="contact" class="form-control" value="" placeholder="+491231456" minlength="10" maxlength="20" required> 
+                                        <label>Phone </label>
+                                        <input type="number" name="contact" class="form-control" value="" placeholder="+491231456" minlength="10" maxlength="20" required> 
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Date Of Birth </label>
@@ -119,22 +121,21 @@
                                         <label>Date Of Leaving </label>
                                         <input type="date" name="leavedate" id="example-email2" name="example-email" class="form-control" placeholder=""> 
                                     </div>
+
+                                        <div class="form-group col-md-3 m-t-20">
+                                            <label>Email </label>
+                                            <input type="email" id="example-email2" name="email" class="form-control" placeholder="email@mail.com" minlength="7" required > 
+                                        </div>
                                     <div class="form-group col-md-3 m-t-20">
-                                        <label>Username </label>
-                                        <input type="text" name="username" class="form-control form-control-line" value="" placeholder="Username"> 
+                                        <label>Password</label>
+                                        <input id="password" name="password" class="form-control" placeholder="**********" onChange="onChange()"> 
                                     </div>
                                     <div class="form-group col-md-3 m-t-20">
-                                        <label>Email </label>
-                                        <input type="email" id="example-email2" name="email" class="form-control" placeholder="email@mail.com" minlength="7" required > 
-                                    </div><!--
-                                    <div class="form-group col-md-3 m-t-20">
-                                        <label>Password </label>
-                                        <input type="text" name="password" class="form-control" value="" placeholder="**********"> 
+                                        <label>Confirm Password</label>
+                                        <input id="confirm" name="confirm" class="form-control" placeholder="**********" onChange="onChange()"> 
+                                        <span id='message'></span>
                                     </div>
-                                    <div class="form-group col-md-3 m-t-20">
-                                        <label>Confirm Password </label>
-                                        <input type="text" name="confirm" class="form-control" value="" placeholder="**********"> 
-                                    </div>-->
+
                                     <div class="form-group col-md-3 m-t-20">
                                         <label>Image </label>
                                         <input type="file" name="image_url" class="form-control" value=""> 
@@ -149,3 +150,22 @@
                     </div>
                 </div>
 <?php $this->load->view('backend/footer'); ?>
+
+<script>
+function onChange() {
+  const password = document.querySelector('input[name=password]');
+  const confirm = document.querySelector('input[name=confirm]');
+  if (confirm.value === password.value) {
+  confirm.setCustomValidity('');
+  document.getElementById('message').innerHTML = "Passwords match";
+  document.getElementById('message').style.color = "green";  // Optional: change color to green for matching passwords
+  document.getElementById('message').style.fontWeight = "normal";  // Optional: reset font weight
+} else {
+  confirm.setCustomValidity('Passwords do not match');
+  document.getElementById('message').innerHTML = "<strong style='color: red;'>Passwords do not match</strong>";
+  document.getElementById('message').style.color = "red";
+  document.getElementById('message').style.fontWeight = "bold";
+}
+
+}
+    </script>

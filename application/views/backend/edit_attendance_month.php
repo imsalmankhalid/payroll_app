@@ -34,7 +34,6 @@
         margin-bottom: 20px;
     }
 </style>
-
 <div class="page-wrapper">
     <div class="message"></div>
     <div class="row page-titles">
@@ -50,103 +49,56 @@
     </div>
 
     <div class="container-fluid">
-        <!-- Buttons Row -->
+        <!-- First Row: Copy Attendance Card -->
         <div class="row m-b-10"> 
             <div class="col-12">
-                <button type="button" class="btn btn-info"><i class="fa fa-plus"></i><a href="<?php echo base_url(); ?>attendance/Attendance" class="text-white"><i class="" aria-hidden="true"></i> Attendance List</a></button>
-                <button type="button" class="btn btn-primary"><i class="fa fa-bars"></i><a href="<?php echo base_url(); ?>leave/Application" class="text-white"><i class="" aria-hidden="true"></i> Leave Application</a></button>
-            </div>
-        </div>  
-
-        <div class="row">
-            <!-- Edit Attendance Form -->
-            <div class="col-4">
-                <div class="card card-outline-info card-small">
-                    <div class="card-header">
-                        <h4 class="m-b-0 text-white">Edit Attendance</h4>
-                    </div>
-                    <div class="card-body">
-                        <form method="post" action="Upd_Attendance_Month" id="attendanceForm" enctype="multipart/form-data" onsubmit="return validateForm()">
-                            <div class="form-group">
-                                <label>Employee</label>
-                                <select class="form-control custom-select" tabindex="1" name="emid" id="emid" required>
-                                    <?php if (!empty($attval->em_code)) : ?>
-                                        <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
-                                    <?php else : ?>
-                                        <option value="#">Select Here</option>
-                                        <?php foreach ($employee as $value) : ?>
-                                            <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Select Month: </label>
-                                <div class="input-group date">
-                                    <input name="selected_month" id="selected_month" class="form-control" type="month" required onchange="updateDays()">
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Place</label>
-                                <select class="form-control custom-select" tabindex="1" name="place" required>
-                                    <option value="office" <?php if (isset($attval->place) && $attval->place == "office") { echo "selected"; } ?>>Office</option>
-                                    <option value="field" <?php if (isset($attval->place) && $attval->place == "field") { echo "selected"; } ?>>Field</option>
-                                </select>
-                            </div>
-
-                            <div class="modal-footer">
-                                <input type="hidden" name="id" value="<?php if (!empty($attval->id)) { echo $attval->id; } ?>" class="form-control" id="recipient-name1">
-                                <button type="submit" id="attendanceUpdate" class="btn btn-primary">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Copy Attendance Form -->
-            <div class="col-4">
-                <div class="card card-outline-info card-small">
+                <div class="card card-outline-info">
                     <div class="card-header">
                         <h4 class="m-b-0 text-white">Copy Attendance</h4>
                     </div>
                     <div class="card-body">
                         <form method="post" action="Cpy_Attendance_Month" id="copyForm" enctype="multipart/form-data" onsubmit="return validateForm()">
-                            <div class="form-group">
-                                <label>From Employee</label>
-                                <select class="form-control custom-select" tabindex="1" name="emid" id="emid" required>
-                                    <?php if (!empty($attval->em_code)) : ?>
-                                        <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
-                                    <?php else : ?>
-                                        <option value="#">Select Here</option>
-                                        <?php foreach ($employee as $value) : ?>
-                                            <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>To Employee</label>
-                                <select class="form-control custom-select" tabindex="1" name="emid2" id="emid2" required>
-                                    <option value="#">Select Here</option>
-                                    <?php foreach ($data as $all) : ?>
-                                        <option value="<?php echo $all->em_code ?>"><?php echo $all->first_name . ' ' . $all->last_name ?></option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-
-                            <div class="form-group">
-                                <label>Select Month: </label>
-                                <div class="input-group date">
-                                    <input name="selected_month2" id="selected_month2" class="form-control" type="month" required>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>From Employee</label>
+                                        <select class="form-control custom-select" tabindex="1" name="emid" id="emid" required>
+                                            <?php if (!empty($attval->em_code)) : ?>
+                                                <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
+                                            <?php else : ?>
+                                                <option value="#">Select Here</option>
+                                                <?php foreach ($employee as $value) : ?>
+                                                    <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
+                                                <?php endforeach; ?>
+                                            <?php endif; ?>
+                                        </select>
+                                    </div>
                                 </div>
-                            </div>
+                                
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>To Employee</label>
+                                        <select class="form-control custom-select" tabindex="1" name="emid2" id="emid2" required>
+                                            <option value="#">Select Here</option>
+                                            <?php foreach ($data as $all) : ?>
+                                                <option value="<?php echo $all->em_code ?>"><?php echo $all->first_name . ' ' . $all->last_name ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
 
-                            <div class="modal-footer">
-                                <input type="hidden" name="id" value="<?php if (!empty($attval->id)) { echo $attval->id; } ?>" class="form-control" id="recipient-name1">
-                                <button type="submit" id="attendanceCopy" class="btn btn-primary">Copy</button>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label>Select Month: </label>
+                                        <div class="input-group date">
+                                            <input name="selected_month2" id="selected_month2" class="form-control" type="month" required>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3 align-self-center">
+                                    <button type="submit" id="attendanceCopy" class="btn btn-primary mt-4">Copy</button>
+                                </div>
                             </div>
                         </form>
                     </div>
@@ -154,21 +106,55 @@
             </div>
         </div>
 
-        <!-- Attendance Data -->
-        <div class="row">
+        <!-- Second Row: Edit Attendance and Attendance Data Cards -->
+        <div class="row m-b-10"> 
             <div class="col-12">
-                <div class="card card-outline-info">
+                <div class="card card-outline-info card-small">
                     <div class="card-header">
-                        <h4 class="m-b-0 text-white">Attendance</h4>
+                        <h4 class="m-b-0 text-white">Edit Attendance</h4>
                     </div>
                     <div class="card-body">
                         <form method="post" action="Upd_Attendance_Month" id="attendanceForm" enctype="multipart/form-data" onsubmit="return validateForm()">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Employee</label>
+                                    <select class="form-control custom-select" tabindex="1" name="eemid" id="eemid" required>
+                                        <?php if (!empty($attval->em_code)) : ?>
+                                            <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
+                                        <?php else : ?>
+                                            <option value="#">Select Here</option>
+                                            <?php foreach ($employee as $value) : ?>
+                                                <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name . ' ' . $value->last_name ?></option>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Select Month: </label>
+                                    <div class="input-group date">
+                                        <input name="selected_month" id="selected_month" class="form-control" type="month" required onchange="updateDays()">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label>Place</label>
+                                    <select class="form-control custom-select" tabindex="1" name="place" required>
+                                        <option value="office" <?php if (isset($attval->place) && $attval->place == "office") { echo "selected"; } ?>>Office</option>
+                                        <option value="field" <?php if (isset($attval->place) && $attval->place == "field") { echo "selected"; } ?>>Field</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
                             <div id="days-container">
                                 <!-- Dynamic input fields for days will be appended here -->
                             </div>
-
+                        </div>
                             <div class="modal-footer">
-                                <input type="hidden" name="id" value="<?php if (!empty($attval->id)) { echo $attval->id; } ?>" class="form-control" id="recipient-name1">
                                 <button type="submit" id="attendanceUpdate" class="btn btn-primary">Submit</button>
                             </div>
                         </form>
@@ -178,6 +164,7 @@
         </div>
     </div>
 </div>
+
 
 <script type="text/javascript">
 
@@ -262,7 +249,7 @@ $.ajax({
 var holidays = [];
 
 function updateDays() {
-    var emid = $('#emid').val();
+    var emid = $('#eemid').val();
     var month = $('#selected_month').val();
     $.ajax({
         url: '<?php echo base_url(); ?>attendance/AttendancebyMonth',

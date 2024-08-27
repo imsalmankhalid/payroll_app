@@ -18,14 +18,27 @@
 	$result = $query->result();
 	return $result;
 	}
-    public function emselect(){
+
+  public function emselect(){
     $sql = "SELECT * FROM `employee` WHERE `status`='ACTIVE'";
     $query=$this->db->query($sql);
   	$result = $query->result();
   	return $result;
 	}
 
-  
+  public function getEmpID(){
+    // SQL query to return only the modified IDs
+    $sql = "SELECT (id + 10001) AS new_id FROM `employee` order by id DESC LIMIT 1";
+    $query = $this->db->query($sql);
+    $result = $query->result_array(); // Use result_array() to get an associative array
+    
+    // Extract the new_id values
+    $ids = array_column($result, 'new_id');
+    
+    return $ids;
+}
+
+
   public function emselectAttendance(){
     $sql = "SELECT DISTINCT a.emp_id AS em_code, e.first_name, e.last_name FROM attendance a JOIN employee e ON a.emp_id = e.em_code;";
     $query=$this->db->query($sql);

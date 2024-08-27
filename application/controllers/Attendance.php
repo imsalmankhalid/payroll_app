@@ -260,11 +260,16 @@ class Attendance extends CI_Controller
                             'break' => $break,
                             'status' => 'A' // Assuming 'A' stands for 'Active'
                         );
-        
-                        // Insert data into the database
-                        $this->attendance_model->Add_AttendanceData($data);
-        
-                        echo "Attendance data added successfully for Day " . $day . ".<br>";
+                        $duplicate = $this->attendance_model->getDuplicateVal($em_id,$attdate);
+
+                        if(!empty($duplicate)){
+                            echo "Duplicate - Already Exist";
+                        } else {
+                            // Insert data into the database
+                            $this->attendance_model->Add_AttendanceData($data);
+            
+                            echo "Attendance data added successfully for Day " . $day . ".<br>";
+                        }
                     }
                 }
             } else {
@@ -279,7 +284,7 @@ class Attendance extends CI_Controller
                 $this->form_validation->set_error_delimiters();
                 
                 // Get data from $_POST array
-                $em_id   = $this->input->post('emid');
+                $em_id   = $this->input->post('eemid');
                 $selected_month = $this->input->post('selected_month');
                 $place = $this->input->post('place');
                 
@@ -291,7 +296,7 @@ class Attendance extends CI_Controller
                     $break = $data['break'];
         
                     // Perform necessary validations
-                    $this->form_validation->set_rules('emid', 'Employee ID', 'trim|required|xss_clean');
+                    $this->form_validation->set_rules('eemid', 'Employee ID', 'trim|required|xss_clean');
                     //$this->form_validation->set_rules('attendance[' . $day . '][signin]', 'Sign In Time for Day ' . $day, 'trim|required|xss_clean');
                     //$this->form_validation->set_rules('attendance[' . $day . '][signout]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
                     //$this->form_validation->set_rules('attendance[' . $day . '][break]', 'Sign Out Time for Day ' . $day, 'trim|required|xss_clean');
@@ -299,6 +304,7 @@ class Attendance extends CI_Controller
         
                     if ($this->form_validation->run() == FALSE) {
                         echo validation_errors();
+                        return;
                         // Handle validation errors
                     } else {
                         // Process the data
@@ -323,7 +329,7 @@ class Attendance extends CI_Controller
         
                         // Prepare data for insertion into the database
                         $data = array(
-                            'asignin_time' => $signin,
+                            'signin_time' => $signin,
                             'signout_time' => $signout,
                             'working_hour' => $work,
                             'place' => $place,
