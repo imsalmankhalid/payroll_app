@@ -49,7 +49,7 @@ class Employee extends CI_Controller {
     }
     public function Add_employee(){
         if($this->session->userdata('user_login_access') != False) { 
-        $this->load->view('backend/add-employee');
+            $this->load->view('backend/add-employee');
         }
     else{
 		redirect(base_url() , 'refresh');
@@ -86,13 +86,22 @@ class Employee extends CI_Controller {
         if ($this->form_validation->run() == FALSE) {
             echo validation_errors();
 			} else {
-            if ($this->employee_model->Does_email_exists($email) ||
-                $this->employee_model->Does_emid_exists($username) ||
-                $this->employee_model->Does_emcode_exists($eid) ||
-                $password != $confirm) {
+                if ($this->employee_model->Does_email_exists($email)) {
+                    $error_messages[] = "Email already exists.";
+                }
                 
-                $this->session->set_flashdata('formdata', 'Email or Employee ID or Employee Code already exists, or check your password');
-                echo "Email or Employee ID or Employee Code already exists, or check your password";
+                if ($this->employee_model->Does_emid_exists($username)) {
+                    $error_messages[] = "Employee ID already exists.";
+                }
+                
+                if ($this->employee_model->Does_emcode_exists($eid)) {
+                    $error_messages[] = "Employee Code already exists.";
+                }
+                
+            if (!empty($error_messages)) {
+                    $this->session->set_flashdata('formdata', implode(' ', $error_messages));
+                    echo implode(' ', $error_messages);
+                
             } else {
             if($_FILES['image_url']['name']){
             $file_name = $_FILES['image_url']['name'];
@@ -192,7 +201,7 @@ class Employee extends CI_Controller {
     else{
 		redirect(base_url() , 'refresh');
 	       }        
-		}
+	}
 	public function Update(){
     if($this->session->userdata('user_login_access') != False) {    
     $eid = $this->input->post('eid');    
@@ -930,6 +939,7 @@ class Employee extends CI_Controller {
         $working_hours = $this->input->post('working_hours');
         $bonus1 = $this->input->post('hourly_bonus');
         $bonus2 = $this->input->post('hourly_bonus2');
+        $daily_bonus = $this->input->post('daily_bonus');
         //$this->load->library('form_validation');
         //$this->form_validation->set_error_delimiters();
         //$this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
@@ -947,6 +957,7 @@ class Employee extends CI_Controller {
                     'emp_code' => $eid,
                     'hourly_bonus' => $bonus1,
                     'hourly_bonus2' => $bonus2,
+                    'daily_bonus' => $daily_bonus,
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);

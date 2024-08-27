@@ -262,23 +262,23 @@ class Payroll extends CI_Controller {
                 $insertId = $this->db->insert_id();
                 #$this->session->set_flashdata('feedback','Successfully Added');
                 #echo "Successfully Added";
-                $data1 = array();
-                $data1 = array(
-                    'salary_id' => $sid,
-                    'medical' => $medical,
-                    'house_rent' => $houserent,
-                    'bonus' => $bonus
-                );
-                $success = $this->employee_model->Update_Addition($aid,$data1);
-                $data2 = array();
-                $data2 = array(
-                    'salary_id' => $sid,
-                    'provident_fund' => $provident,
-                    'bima' => $bima,
-                    'tax' => $tax,
-                    'others' => $others
-                );
-                $success = $this->employee_model->Update_Deduction($did,$data2); 
+                // $data1 = array();
+                // $data1 = array(
+                //     'salary_id' => $sid,
+                //     'medical' => $medical,
+                //     'house_rent' => $houserent,
+                //     'bonus' => $bonus
+                // );
+                // $success = $this->employee_model->Update_Addition($aid,$data1);
+                // $data2 = array();
+                // $data2 = array(
+                //     'salary_id' => $sid,
+                //     'provident_fund' => $provident,
+                //     'bima' => $bima,
+                //     'tax' => $tax,
+                //     'others' => $others
+                // );
+                // $success = $this->employee_model->Update_Deduction($did,$data2); 
                 echo "Successfully Updated";                
             } else {
                 $success = $this->employee_model->Add_Salary($data);
