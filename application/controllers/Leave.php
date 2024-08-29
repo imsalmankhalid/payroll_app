@@ -552,12 +552,15 @@ class Leave extends CI_Controller
                     );
             $success  = $this->leave_model->updateLeaveAssignedInfo($employeeId, $type, $data);
             $earnval = $this->leave_model->emEarnselectByLeave($employeeId); 
+            if (!empty($earnval)) 
+            {
               $data = array();
               $data = array(
                         'present_date' => $earnval->present_date - ($duration/8),
                         'hour' => $earnval->hour - $duration
                     );
-            $success = $this->leave_model->UpdteEarnValue($employeeId,$data);                     
+                $success = $this->leave_model->UpdteEarnValue($employeeId,$data);                     
+            }
             echo "Updated successfully";
                 } else {
                 //If not taken yet

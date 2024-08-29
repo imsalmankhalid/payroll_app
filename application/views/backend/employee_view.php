@@ -548,7 +548,7 @@
                                                    <?php foreach($Leaveinfo as $value): ?>
                                                     <tr>
                                                         <td><?php echo $value->name; ?></td>
-                                                        <td><?php echo $value->total_day; ?>/<?php echo $value->day; ?></td>
+                                                        <td><?php echo $value->day; ?>/<?php echo $value->day; ?></td>
                                                     </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>

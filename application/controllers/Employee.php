@@ -779,7 +779,7 @@ class Employee extends CI_Controller {
                 'type_id' => $type,
                 'day' => $day,
                 'total_day' => '0',
-                'year' => $year
+                'dateyear' => $year
             );
             $success = $this->employee_model->Add_Assign_Leave($data);
             echo "Successfully Added";

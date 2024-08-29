@@ -21,7 +21,7 @@
         <div class="col-md-5 align-self-center">
             <h3 class="text-themecolor"><i class="fa fa-university" aria-hidden="true"></i> Gehaltsabrechnung</h3>
         </div>
-        <div class="col-md-7 align-self-center">
+        <div class="col-md-7 align-self-center no-print">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="javascript:void(0)">Startseite</a></li>
                 <li class="breadcrumb-item active"><i class="fa fa-university" aria-hidden="true"></i> Gehaltsabrechnung</li>
@@ -29,23 +29,22 @@
         </div>
     </div>
     
-    <div class="container-fluid"> 
-        <div class="row m-b-10"> 
+    <div class="container-fluid "> 
+        <div class="row m-b-10 no-print"> 
             <div class="col-12">
-                <button type="button" class="btn btn-primary"><i class="fa fa-bars"></i><a href="<?php echo base_url(); ?>Payroll/Generate_salary" class="text-white"><i class="" aria-hidden="true"></i> Gehalt generieren</a></button>
-                <button type="button" class="btn btn-secondary" onclick="printPage()">Drucken</button>
+                <button type="button" class="btn btn-info" onclick="printPage()">Drucken</button>
             </div>
         </div> 
         <div class="row">
             <div class="col-12">
-                <div class="card card-outline-info" >
+                <div class="card card-outline-info first-card" >
                     <div class="card-header">
                         <h4 class="m-b-0 text-white"><i class="fa fa-hourglass-start" aria-hidden="true"></i> Gehaltsliste                     
                         </h4>
                     </div>
                     <div class="card-body">
-                        <div class="row">
-                            <div class="form-group col-md-4">
+                        <div class="row no-print">
+                            <div class="form-group col-md-4 ">
                                 <select class="form-control custom-select" data-placeholder="Wählen Sie eine Abteilung" tabindex="1" id="depid" name="depid" style="margin-top: 21px;" required>
                                 <option value="#">Abteilung auswählen</option>
                                 <?php foreach ($department as $value): ?>
@@ -73,6 +72,7 @@
                                 </div>
                             </div> 
                         </div>
+
                         <div class="table-responsive">       
                             <table id="attendanceTable" class="display nowrap table table-hover table-striped table-bordered">
                                 <thead>
@@ -88,8 +88,8 @@
                                         <th>Normale Stunden</th>
                                         <th>Überstunden</th>
                                         <th>Nachtstunden</th>
-                                        <th>Verpflegung - full</th>
-                                        <th>Verpflegung - less</th>
+                                        <th>Mahlzeit(f)</th>
+                                        <th>Mahlzeit(l)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -110,7 +110,7 @@
                     <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Gehaltsabrechnung Zusammenfassung</h4>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" style="width: 100%; table-layout: auto;">
                         <thead>
                             <tr>
                                 <th>Beschreibung</th>
@@ -171,7 +171,7 @@
                     <h4 class="m-b-0 text-white"><i class="fa fa-calculator" aria-hidden="true"></i> Calculation Summary</h4>
                 </div>
                 <div class="card-body">
-                    <table class="table table-bordered table-striped">
+                    <table class="table table-bordered table-striped" style="width: 100%; table-layout: auto;">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -224,7 +224,6 @@
     </div>
 </div>
 
-
     </div>
                         
 <script type="text/javascript">
@@ -241,6 +240,7 @@ $.ajax({
     holidays = response;
     console.log(holidays);
 });
+
 
 function getHolidayType(date) {
     // Convert the date to YYYY-MM-DD format
@@ -296,7 +296,9 @@ function getHolidayType(date) {
         var selectedMonth = e.format('yyyy-mm');
         fetchAttendanceData(selectedMonth);
     });
-    function fetchAttendanceData(month) {
+
+
+function fetchAttendanceData(month) {
     var emid = $('#empid').val();
     $.ajax({
         url: '<?php echo base_url(); ?>attendance/AttendancebyMonth', 
@@ -468,6 +470,7 @@ function getHolidayType(date) {
                     var finalSalary = totalSalary - deductions;
                     $('#totalSalary').text(finalSalary.toFixed(2) + ' €');
                 });
+
             } else {
                 $(".message").css('background-color', '#FF5722').fadeIn('fast').delay(10000).fadeOut('fast').html('No Data for selected month');
             }
@@ -478,6 +481,7 @@ function getHolidayType(date) {
     });
 }
 
+
 });
 function formatTime(minutes) {
     let hours = Math.floor(minutes / 60);
@@ -487,8 +491,59 @@ function formatTime(minutes) {
 
 
 function printPage() {
-    window.print();
+    var printWindow = window.open('', '', 'height=600,width=800');
+    printWindow.document.write('<html><head><title>Print</title>');
+    printWindow.document.write('<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">'); // Include Bootstrap CSS if needed
+    printWindow.document.write('<style>');
+    printWindow.document.write('@media print {');
+    printWindow.document.write('  @page {');
+    printWindow.document.write('    margin: 10mm;'); // Ensure there is margin space for printing
+    printWindow.document.write('  }');
+    printWindow.document.write('  body {');
+    printWindow.document.write('    font-family: Arial, sans-serif;');
+    printWindow.document.write('    margin: 0;');
+    printWindow.document.write('  }');
+    printWindow.document.write('  .page-wrapper {');
+    printWindow.document.write('    width: 100%;');
+    printWindow.document.write('    page-break-inside: avoid;');
+    printWindow.document.write('  }');
+    printWindow.document.write('  .no-print {');
+    printWindow.document.write('    display: none;'); // Hide elements with the no-print class
+    printWindow.document.write('  }');
+    printWindow.document.write('  table {');
+    printWindow.document.write('    width: 100%;');
+    printWindow.document.write('    table-layout: auto;'); // Auto size columns based on content
+    printWindow.document.write('    font-size: 8px;'); // Reduce font size specifically for tables
+    printWindow.document.write('    page-break-inside: auto;');
+    printWindow.document.write('    border-collapse: collapse;'); // Ensure borders collapse for print
+    printWindow.document.write('  }');
+    printWindow.document.write('  th, td {');
+    printWindow.document.write('    padding: 2px;'); // Adjust padding for better spacing
+    printWindow.document.write('    word-wrap: break-word;'); // Ensure long words or content wrap to avoid overflow
+    printWindow.document.write('    vertical-align: top;'); // Align text to the top of cells
+    printWindow.document.write('    line-height: 0.5;');
+    printWindow.document.write('    border: 1px solid black;'); // Optional: Add border for clarity
+    printWindow.document.write('  }');
+    printWindow.document.write('  tr {');
+    printWindow.document.write('    page-break-inside: avoid;');
+    printWindow.document.write('    page-break-after: auto;');
+    printWindow.document.write('  }');
+    printWindow.document.write('  .first-card {');
+    printWindow.document.write('    page-break-after: always;'); // Ensure cards start on a new page
+    printWindow.document.write('    margin-top: 20px;'); // Add space at the top of the card for better formatting
+    printWindow.document.write('    padding: 10px;'); // Add padding to the card
+    printWindow.document.write('    border: 1px solid black;'); // Optional: Add border for better visibility
+    printWindow.document.write('  }');
+    printWindow.document.write('}');
+    printWindow.document.write('</style>');
+    printWindow.document.write('</head><body>');
+    printWindow.document.write(document.querySelector('.page-wrapper').innerHTML);
+    printWindow.document.write('</body></html>');
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
 }
+
 
 </script>
 
