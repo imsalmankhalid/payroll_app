@@ -940,6 +940,7 @@ class Employee extends CI_Controller {
         $bonus1 = $this->input->post('hourly_bonus');
         $bonus2 = $this->input->post('hourly_bonus2');
         $daily_bonus = $this->input->post('daily_bonus');
+        $off_day = $this->input->post('off_day');
         //$this->load->library('form_validation');
         //$this->form_validation->set_error_delimiters();
         //$this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
@@ -958,6 +959,7 @@ class Employee extends CI_Controller {
                     'hourly_bonus' => $bonus1,
                     'hourly_bonus2' => $bonus2,
                     'daily_bonus' => $daily_bonus,
+                    'off_day' => $off_day,
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);

@@ -650,29 +650,46 @@
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div> 
-			                                    <div class="form-group col-sm-1 m-t-5">
+			                                    <div class="form-group col-sm-2 m-t-5">
 			                                        <label>Amount</label>
 			                                        <input type="text" name="total" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> class="form-control form-control-line total" placeholder="total salary" value="<?php if(!empty($salaryvalue->total)) echo $salaryvalue->total ?>" required> 
 			                                    </div>
-                                                </div><div class="row">
+
+
+                                                </div>
+                                                <div class="row">
+                                                <div class="form-group col-sm-2 m-t-5">
+                                                    <label class="control-label">Off day in week</label>
+                                                    <select name="off_day" class="form-control custom-select" data-placeholder="Choose a Category" >
+                                                        <option value="-1">None</option>
+                                                        <option value="1">Monday</option>
+                                                        <option value="2">Tuesday</option>
+                                                        <option value="3">Wednesday</option>
+                                                        <option value="4">Thursday</option>
+                                                        <option value="5">Friday</option>
+                                                        <option value="6">Saturday</option>
+                                                        <option value="0">Sunday</option>
+                                                    </select>
+                                                </div></div>
+                                                <div class="row">
                                                     <!-- Working Hours -->
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Working Hours</label>
-                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> required>
+                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> >
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus</label>
-                                                        <input  type="number" name="hourly_bonus" class="form-control" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> required>
+                                                        <input  type="number" step="0.1" name="hourly_bonus" class="form-control" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> >
                                                     </div>
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus - 2</label>
-                                                        <input  type="number" name="hourly_bonus2" class="form-control" placeholder="Hourly Bonus 2" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> required>
+                                                        <input  type="number" step="0.1" name="hourly_bonus2" class="form-control" placeholder="Hourly Bonus 2" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> >
                                                     </div>
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Daily Bonus</label>
-                                                        <input  type="number" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
+                                                        <input  type="number" step="0.1" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
                                                     </div>
                                                 </div>
                                                 <!-- Button -->

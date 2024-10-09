@@ -102,12 +102,12 @@ date_default_timezone_set('Asia/Karachi');
                     </ul>
                     <ul class="navbar-nav my-lg-0">
                         <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image; ?>" alt="Genit" class="profile-pic" style="height:40px;width:40px;border-radius:50px" /></a>
+                            <a class="nav-link dropdown-toggle text-muted waves-effect waves-dark" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image  ?? 'user.png'; ?>" alt="Genit" class="profile-pic" style="height:40px;width:40px;border-radius:50px" /></a>
                             <div class="dropdown-menu dropdown-menu-right scale-up">
                                 <ul class="dropdown-user">
                                     <li>
                                         <div class="dw-user-box">
-                                            <div class="u-img"><img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image; ?>" alt="user"></div>
+                                            <div class="u-img"><img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image  ?? 'user.png';  ?>" alt="user"></div>
                                             <div class="u-text">
                                                 <h4><?php echo $basicinfo->first_name.' '.$basicinfo->last_name; ?></h4>
                                                 <p class="text-muted"><?php echo $basicinfo->em_email ?></p>
