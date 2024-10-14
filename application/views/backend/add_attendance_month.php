@@ -218,6 +218,9 @@ $(document).ready(function () {
 });
 </script>
 <script type="text/javascript">
+    // Fetch holiday calendar and store it
+var holidays = [];
+var leaves = [];
 $(document).ready(function () {
         $.ajax({
             url: '<?php echo base_url(); ?>leave/Holidays_for_calendar',
@@ -225,20 +228,22 @@ $(document).ready(function () {
             data: '',
             dataType: 'json',
         }).done(function (response) {
+            holidays = response;
             console.log(response);
-		});
-});
-// Fetch holiday calendar and store it
-var holidays = [];
-
-$.ajax({
-    url: '<?php echo base_url(); ?>leave/Holidays_for_calendar',
-    method: 'GET',
-    data: '',
-    dataType: 'json',
-}).done(function(response) {
-    holidays = response;
-    console.log(holidays);
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX request failed:', textStatus, errorThrown);
+        });
+        
+        $.ajax({
+            url: '<?php echo base_url(); ?>leave/Leaves_for_calendar',
+            method: 'GET',
+            data: '',
+            dataType: 'json',
+        }).done(function(response) {
+            leaves = response;
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX request failed:', textStatus, errorThrown);
+        });
 });
 
 function updateDays() {

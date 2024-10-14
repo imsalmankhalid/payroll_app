@@ -50,14 +50,24 @@ class Leave extends CI_Controller
             redirect(base_url(), 'refresh');
         }
     }
+    public function Leaves_for_calendar()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            $result = $this->leave_model->GetAllLeaveInfo();
+
+            echo json_encode($result);
+           
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
 
     public function Holidays_for_calendar()
     {
         if ($this->session->userdata('user_login_access') != False) {
             $result = $this->leave_model->GetAllHoliInfoForCalendar();
-            print_r($result);
-            die();
-            echo jason_encode($result);
+
+            echo json_encode($result);
            
         } else {
             redirect(base_url(), 'refresh');

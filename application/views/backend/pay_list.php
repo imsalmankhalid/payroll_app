@@ -74,7 +74,7 @@
                         </div>
 
                         <div class="table-responsive">       
-                            <table id="attendanceTable" class="display nowrap table table-hover table-striped table-bordered">
+                            <table id="attendanceTable" class="display nowrap table table-hover table-bordered">
                                 <thead>
                                     <tr>
                                         <th>#</th>
@@ -370,19 +370,16 @@ function fetchAttendanceData(month) {
                     var dayOfWeek = date.day(); // This will give you a number (0-6)
 
                     // Exclude Saturday and Sunday
-                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) || !isHoliday(new Date(attendance.atten_date))) {
+                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date))) {
                         totalMonthMinutes += dayWorkMinutes;
                         work_hours = attendance.work_hours;
                     } else {
                         if (workHours == 0) {
                             work_hours = 0;
                         }
+                        rowBackgroundColor = 'style="background-color: #E5E4E2;"';
                     }
-                    if (attendance.off_day === String(dayOfWeek))
-                    {
-                        work_hours = 0;
-                        rowBackgroundColor = 'style="background-color: #ECE46B ;"';
-                    }
+
                     // Calculate overtime in minutes
 
                     if(workHours > 0)
@@ -451,9 +448,14 @@ function fetchAttendanceData(month) {
 
                     if (isHoliday(new Date(attendance.atten_date)))
                     {
-                        rowBackgroundColor = 'style="background-color: #B2BEB5;"';
+                        rowBackgroundColor = 'style="background-color: #F0FFF0;"'; 
                     }
 
+                    if (attendance.off_day === String(dayOfWeek))
+                    {
+                        work_hours = 0;
+                        rowBackgroundColor = 'style="background-color: #FFF9E3;"';
+                    }
                     var row = `<tr ${rowBackgroundColor}>` +
                         '<td>' + (index + 1) + '</td>' +
                         '<td>' + attendance.atten_date + '</td>' +

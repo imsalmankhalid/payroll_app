@@ -39,6 +39,27 @@
         $result = $query->result();
         return $result;
     }
+    public function GetAllLeaveInfo() {
+        $sql = "SELECT * FROM `emp_leave`";
+        $query = $this->db->query($sql);
+        $result = $query->result();
+    
+        // Iterate over the result and rename the keys
+        foreach ($result as $leave) {
+            $leave->from_date = $leave->start_date;
+            $leave->to_date = $leave->end_date;
+            // Check if end_date is empty
+            if (empty($leave->end_date)) {
+                $leave->to_date = $leave->start_date; // Set to start_date if end_date is empty
+            }
+            unset($leave->start_date); // Remove the old key
+            unset($leave->end_date);   // Remove the old key
+        }
+    
+        return $result;
+    }
+    
+
     public function GetAllHoliInfoForCalendar(){
         $sql = "SELECT * FROM `holiday`";
         $query = $this->db->query($sql);
