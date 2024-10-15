@@ -53,7 +53,8 @@ class Leave extends CI_Controller
     public function Leaves_for_calendar()
     {
         if ($this->session->userdata('user_login_access') != False) {
-            $result = $this->leave_model->GetAllLeaveInfo();
+            $id = $this->input->get('id');
+            $result = $this->leave_model->GetAllLeaveInfo($id);
 
             echo json_encode($result);
            
@@ -66,6 +67,19 @@ class Leave extends CI_Controller
     {
         if ($this->session->userdata('user_login_access') != False) {
             $result = $this->leave_model->GetAllHoliInfoForCalendar();
+
+            echo json_encode($result);
+           
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
+
+    public function get_off_day()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            $id = $this->input->get('id');
+            $result = $this->employee_model->GetOffdayValue($id);
 
             echo json_encode($result);
            
@@ -249,7 +263,7 @@ class Leave extends CI_Controller
             $appenddate   = $this->input->post('enddate');
             $hourAmount   = $this->input->post('hourAmount');
             $reason       = $this->input->post('reason');
-            $type         = $this->input->post('type');
+            $type         = $this->input->post('leavetype');
             // $duration     = $this->input->post('duration');
 
             if($type == 'Half Day') {

@@ -162,8 +162,8 @@
                                 </select>
                             </div>
                             <div class="form-group">
-                                <label class="control-label">Reason</label>
-                                <textarea class="form-control" name="reason" id="message-text1" required minlength="10"></textarea>                                                
+                                <label class="control-label">Reason (Optional)</label>
+                                <textarea class="form-control" name="reason" id="message-text1" ></textarea>                                                
                             </div>
                             
                         </div>

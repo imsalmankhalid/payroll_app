@@ -1057,4 +1057,5 @@ class Employee extends CI_Controller {
         $data['invalidem'] = $this->employee_model->getInvalidUser();
         $this->load->view('backend/invalid_user',$data);
     }
+    
 }

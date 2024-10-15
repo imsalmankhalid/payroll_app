@@ -39,8 +39,20 @@
         $result = $query->result();
         return $result;
     }
-    public function GetAllLeaveInfo() {
-        $sql = "SELECT * FROM `emp_leave`";
+    public function GetAllLeaveInfo($id) {
+        $sql = "SELECT em_id FROM employee WHERE em_code = '$id' ";
+        $query = $this->db->query($sql);
+        
+        // Check if any employee was found
+        if ($query->num_rows() == 0) {
+            return []; // Return an empty array if no employee is found
+        }
+        
+        // Get the em_id
+        $employee = $query->row();
+        $em_id = $employee->em_id;
+
+        $sql = "SELECT * FROM `emp_leave` where `em_id` = '$em_id' and leave_status = 'Approve'";
         $query = $this->db->query($sql);
         $result = $query->result();
     
@@ -64,7 +76,7 @@
         $sql = "SELECT * FROM `holiday`";
         $query = $this->db->query($sql);
         $result = $query->result();
-        return json_encode($result);
+        return $result;
     }
     public function GetLeaveValue($id){
         $sql = "SELECT * FROM `holiday` WHERE `id`='$id'";

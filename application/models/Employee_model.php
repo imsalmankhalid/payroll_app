@@ -193,6 +193,18 @@
 		$result = $query->result();
 		return $result;        
     }
+    public function GetOffdayValue($id){
+      $sql = "SELECT em_id FROM employee WHERE em_code = '$id' ";
+      $query = $this->db->query($sql);
+
+      // Get the em_id
+      $employee = $query->row();
+      $em_id = $employee->em_id;
+      $sql = "SELECT * FROM `emp_salary`  WHERE emp_id = '$em_id'";
+      $query=$this->db->query($sql);
+		  $result = $query->row();
+		  return $result->off_day;        
+    }
     public function GetsalaryValue($id){
       $sql = "SELECT `emp_salary`.*,
       `addition`.*,

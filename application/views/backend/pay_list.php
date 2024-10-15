@@ -14,6 +14,18 @@
     font-size: 1.25rem;
     font-weight: 500;
 }
+.color-legend {
+        margin-bottom: 10px;
+    }
+
+    .legend-item {
+        display: inline-block;
+        padding: 5px 10px;
+        margin-right: 10px;
+        color: black;
+        font-size: 14px;
+        border-radius: 5px;
+    }
 </style>
 <div class="page-wrapper">
     <div class="message"></div>
@@ -72,7 +84,13 @@
                                 </div>
                             </div> 
                         </div>
-
+                        <div class="color-legend">
+                            <span class="legend-item" style="background-color: #ffcccb;">Work Day (No Work Hours)</span>
+                            <span class="legend-item" style="background-color: #E5E4E2;">Weekend</span>
+                            <span class="legend-item" style="background-color: #F0FFF0;">Holiday</span>
+                            <span class="legend-item" style="background-color: #DCD0FF;">Leave</span>
+                            <span class="legend-item" style="background-color: #FFF9E3;">Off Day</span>
+                        </div>
                         <div class="table-responsive">       
                             <table id="attendanceTable" class="display nowrap table table-hover table-bordered">
                                 <thead>
@@ -268,7 +286,7 @@ function getHolidayType(date) {
     // Check if the date is a weekend (Saturday or Sunday)
     var dayOfWeek = date.getDay(); // 0 = Sunday, 6 = Saturday
     if (dayOfWeek === 0 || dayOfWeek === 6) {
-        return ''; // Return empty for weekends
+        return 'Ruhetage'; // Return empty for weekends
     }
     
     // Find if the date matches any holiday
@@ -318,6 +336,22 @@ function getHolidayType(date) {
         fetchAttendanceData(selectedMonth);
     });
 
+    var leaves = [];
+    
+    // Function to check if the date is a leave
+    function isLeave(date) {
+        // Convert the date to YYYY-MM-DD format
+        var formattedDate = date.toISOString().split('T')[0];
+
+        // Check if the date matches any holiday
+        var holiday = leaves.find(function(holiday) {
+            return formattedDate >= holiday.from_date && formattedDate <= holiday.to_date;
+        });
+
+        // Return true if it's a holiday, otherwise false
+        return holiday || null; // Convert the holiday object to a boolean
+    }
+
 
 function fetchAttendanceData(month) {
     var emid = $('#empid').val();
@@ -326,6 +360,7 @@ function fetchAttendanceData(month) {
         type: 'GET',
         data: { month: month, employee_id: emid },
         success: function(response) {
+            leaves = JSON.parse(response).leaves;
             var data = JSON.parse(response).attendancelist;
             if (Array.isArray(data) && data.length > 0) {
                 var tableBody = $('#attendanceTable tbody');
@@ -349,7 +384,9 @@ function fetchAttendanceData(month) {
 
                 $.each(data, function(index, attendance) {
                     var date = moment(attendance.atten_date);
-                    var dayOfWeek = date.format('dddd');
+                    var dayOfWeek = date.day(); // This will give you a number (0-6)
+                    const daysInGerman = ["So", "Mo", "Di", "Mi", "Do", "Fr", "Sa"];
+                    var dayShort = daysInGerman[dayOfWeek];
                     var overtimeMinutes = 0;
                     var overtime = formatTime(Math.abs(overtimeMinutes));
                     var rowBackgroundColor = 'style="background-color: #ffcccb;"';
@@ -367,16 +404,15 @@ function fetchAttendanceData(month) {
                     
                     var [dh, dm] = attendance.work_hours.split(':').map(Number);
                     var dayWorkMinutes = dh * 60 + dm;
-                    var dayOfWeek = date.day(); // This will give you a number (0-6)
+                    
 
                     // Exclude Saturday and Sunday
-                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date))) {
+                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date)) && !isLeave(new Date(attendance.atten_date)) && !(attendance.off_day === String(dayOfWeek))) {
                         totalMonthMinutes += dayWorkMinutes;
                         work_hours = attendance.work_hours;
                     } else {
-                        if (workHours == 0) {
                             work_hours = 0;
-                        }
+                            workHours = 0;
                         rowBackgroundColor = 'style="background-color: #E5E4E2;"';
                     }
 
@@ -445,22 +481,30 @@ function fetchAttendanceData(month) {
                             totalMealsEqualOrMore += mealEqualOrMore !== "" ? parseFloat(mealEqualOrMore) : 0;
                         }
                     }
-
+                    var holiday_type =getHolidayType(new Date(attendance.atten_date));
                     if (isHoliday(new Date(attendance.atten_date)))
                     {
                         rowBackgroundColor = 'style="background-color: #F0FFF0;"'; 
+                        holiday_type = getHolidayType(new Date(attendance.atten_date));
+                    }
+
+                    var leave = isLeave(new Date(attendance.atten_date));
+                    if (leave)
+                    {
+                        rowBackgroundColor = 'style="background-color: #DCD0FF;"'; 
+                        holiday_type = leave.leave_type;
                     }
 
                     if (attendance.off_day === String(dayOfWeek))
                     {
-                        work_hours = 0;
                         rowBackgroundColor = 'style="background-color: #FFF9E3;"';
                     }
+
                     var row = `<tr ${rowBackgroundColor}>` +
                         '<td>' + (index + 1) + '</td>' +
                         '<td>' + attendance.atten_date + '</td>' +
-                        '<td>' + dayOfWeek + '</td>' +
-                        '<td>' + getHolidayType(new Date(attendance.atten_date)) + '</td>' +
+                        '<td>' + dayShort + '</td>' +
+                        '<td>' + holiday_type + '</td>' +
                         '<td>' + attendance.signin_time + '</td>' +
                         '<td>' + attendance.signout_time + '</td>' +
                         '<td>' + attendance.break + '</td>' +
@@ -475,7 +519,7 @@ function fetchAttendanceData(month) {
                 });
 
                 var totalsRow = '<tr>' +
-                    '<td colspan="6"><strong>Total</strong></td>' +
+                    '<td colspan="7"><strong>Total</strong></td>' +
                     '<td><strong>' + formatTime(totalWorkMinutes) + '</strong></td>' +
                     '<td><strong>' + formatTime(totalMonthMinutes) + '</strong></td>' +
                     '<td><strong>' + formatTime(totalOvertimeMinutes) + '</strong></td>' +

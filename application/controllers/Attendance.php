@@ -36,6 +36,7 @@ class Attendance extends CI_Controller
             $month=$this->input->get('month');
             $em_id=$this->input->get('employee_id');
             $data['attendancelist'] = $this->attendance_model->getAllAttendanceMonth($month,  $em_id);
+            $data['leaves'] = $this->leave_model->GetAllLeaveInfo($em_id);
             echo json_encode($data);
         } else {
             redirect(base_url(), 'refresh');
