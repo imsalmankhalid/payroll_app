@@ -95,19 +95,19 @@
                             <table id="attendanceTable" class="display nowrap table table-hover table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>#</th>
-                                        <th>Datum</th>
-                                        <th>Tag</th>
-                                        <th>Art</th>
-                                        <th>Einloggen</th>
-                                        <th>Ausloggen</th>
-                                        <th>Pause</th>
-                                        <th>Arbeitszeit</th>
-                                        <th>Normale Stunden</th>
-                                        <th>Überstunden</th>
-                                        <th>Nachtstunden</th>
-                                        <th>Mahlzeit(f)</th>
-                                        <th>Mahlzeit(l)</th>
+                                    <th># (Number)</th>
+                                    <th>Datum (Date)</th>
+                                    <th>Tag (Day)</th>
+                                    <th>Art (Type)</th>
+                                    <th>Einloggen (Log In)</th>
+                                    <th>Ausloggen (Log Out)</th>
+                                    <th>Pause (Break)</th>
+                                    <th>Arbeitszeit (Working Time)</th>
+                                    <th>Normale Stunden (Regular Hours)</th>
+                                    <th>Überstunden (Overtime)</th>
+                                    <th>Nachtstunden (Night Hours)</th>
+                                    <th>Mahlzeit(f) (Meal Time - Full)</th>
+                                    <th>Mahlzeit(l) (Meal Time - Light)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,43 +137,47 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Arbeitstage des Monats (ohne Sa-So):</strong></td>
+                                <td><strong>Total working days (ohne Sa-So)  totalWorkingDays:</strong></td>
+                                <td id="totalWorkingDays" class="display-8"></td>
+                            </tr>
+                            <tr>
+                                <td><strong>Days worked in month (ohne Sa-So)  totalWorkDays:</strong></td>
                                 <td id="totalWorkDays" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Gesamtarbeitsstunden im Monat:</strong></td>
+                                <td><strong>Gesamtarbeitsstunden im Monat totalWorkHours:</strong></td>
                                 <td id="totalWorkHours" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Mitarbeiterarbeitsstunden im Monat:</strong></td>
+                                <td><strong>Mitarbeiterarbeitsstunden im Monat  normalWorkHours:</strong></td>
                                 <td id="normalWorkHours" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Überstunden des Mitarbeiters im Monat:</strong></td>
+                                <td><strong>Überstunden des Mitarbeiters im Monat totalOvertime:</strong></td>
                                 <td id="totalOvertime" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Nachtstunden im Monat:</strong></td>
+                                <td><strong>Nachtstunden im Monat  totalNightHours:</strong></td>
                                 <td id="totalNightHours" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Verpflegung für volle Arbeitsstunden:</strong></td>
+                                <td><strong>Verpflegung für volle Arbeitsstunden  mealsFull:</strong></td>
                                 <td id="mealsFull" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Verpflegung für weniger als Arbeitsstunden:</strong></td>
+                                <td><strong>Verpflegung für weniger als Arbeitsstunden  mealsLess:</strong></td>
                                 <td id="mealsLess" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Bonus (pro Arbeitsstunde):</strong></td>
+                                <td><strong>Bonus (pro Arbeitsstunde)  bonus:</strong></td>
                                 <td id="bonus" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Bonus 2:</strong></td>
+                                <td><strong>Bonus 2  bonus2: </strong></td>
                                 <td id="bonus2" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Stundenlohn:</strong></td>
+                                <td><strong>Stundenlohn  hourlyPay:</strong></td>
                                 <td id="hourlyPay" class="display-8"></td>
                             </tr>
                         </tbody>
@@ -199,17 +203,17 @@
                         </thead>
                         <tbody>
                             <tr>
-                                <td><strong>Gesamtarbeitsstunden im Monat:</strong></td>
+                                <td><strong>Gesamtarbeitsstunden im Monat  totalWorkHours_amt:</strong></td>
                                 <td id="totalWorkHours2" class="display-8"></td>
                                 <td id="totalWorkHours_amt" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Verpflegung für volle Arbeitsstunden:</strong></td>
+                                <td><strong>Verpflegung für volle Arbeitsstunden  mealsFull_amt:</strong></td>
                                 <td id="mealsFull2" class="display-8"></td>
                                 <td id="mealsFull_amt" class="display-8"></td>
                             </tr>
                             <tr>
-                                <td><strong>Bonus (pro Arbeitsstunde):</strong></td>
+                                <td><strong>Bonus (pro Arbeitsstunde) bonus_amt:</strong></td>
                                 <td id="bonus_1" class="display-8"></td>
                                 <td id="bonus_amt" class="display-8"></td>
                             </tr>
@@ -379,7 +383,8 @@ function fetchAttendanceData(month) {
                 var hourly_salary = 0;
                 var bonusPerHour = 0;
                 var bonusPerHour2 = 0;
-                var totalWorkDays = 0; // Initialize total work days
+                var totalWorkDays = 0; 
+                var totalWorkingDays = 0;
                 var work_hours = 0;
 
                 $.each(data, function(index, attendance) {
@@ -411,14 +416,15 @@ function fetchAttendanceData(month) {
                     if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date)) && !leave && !(attendance.off_day === String(dayOfWeek))) {
                         totalMonthMinutes += dayWorkMinutes;
                         work_hours = attendance.work_hours;
+                        totalWorkingDays++;
                     } else {
                         if ((leave && leave.type == '1') || isHoliday(new Date(attendance.atten_date)))
                         {
                              work_hours = attendance.work_hours;
                              attendance.Hours = attendance.work_hours;
                              workHours = (attendance.work_hours.split(':')[0] * 60) + parseInt(attendance.work_hours.split(':')[1]);
-                             totalWorkMinutes += workHours;
                              totalMonthMinutes += workHours;
+                             totalWorkingDays++;
                         } else {
                             work_hours = 0;
                             workHours = 0;
@@ -430,14 +436,15 @@ function fetchAttendanceData(month) {
                     if(workHours > 0)
                     {
                         overtimeMinutes = workHours - dayWorkMinutes;
-                        totalOvertimeMinutes += overtimeMinutes;
+                        if(overtimeMinutes > 0)
+                            totalOvertimeMinutes += overtimeMinutes;
                     
                         overtime = formatTime(Math.abs(overtimeMinutes));
 
                         if (overtimeMinutes < 0) {
-                            overtime = `<td style="color: red;">- ${overtime}</td>`;
+                            overtime = `<td style="color: red;">- ${overtime}  -- ${overtimeMinutes} -- ${totalOvertimeMinutes}</td>`;
                         } else {
-                            overtime = `<td>${overtime}</td>`;
+                            overtime = `<td>${overtime}  -- ${overtimeMinutes} -- ${totalOvertimeMinutes}</td>`;
                         }
 
                         // Calculate night hours (22:00 to 06:00)
@@ -473,8 +480,6 @@ function fetchAttendanceData(month) {
 
                             var weeklyOvertimeDisplay = weeklyHours > 45 * 60 ? formatTime(weeklyHours - 45 * 60) : '';
 
-                            totalWorkMinutes += workHours;
-
                             rowBackgroundColor = dayWorkMinutes === 0 ? 'style="background-color: #ffcccb;"' : '';
                             
                             // Determine daily meal based on 8 hours vs work hours
@@ -484,10 +489,12 @@ function fetchAttendanceData(month) {
                             totalMealsLess += mealLess !== "" ? parseFloat(mealLess) : 0;
                             totalMealsEqualOrMore += mealEqualOrMore !== "" ? parseFloat(mealEqualOrMore) : 0;
                         }
+                        totalWorkMinutes += workHours;
                         if (workHours > 0) {
                                 totalWorkDays++; // Count the day as a working day if there are logged hours
                             }
                     }
+
                     var holiday_type =getHolidayType(new Date(attendance.atten_date));
                     if (isHoliday(new Date(attendance.atten_date)))
                     {
@@ -545,6 +552,7 @@ function fetchAttendanceData(month) {
                     (totalMealsEqualOrMore + totalMealsLess) + dailyBonus;
                 
                 $('#totalWorkDays').text(totalWorkDays);
+                $('#totalWorkingDays').text(totalWorkingDays);
                 $('#totalWorkHours').text(formatTime(totalWorkMinutes));
                 $('#totalWorkHours2').text(hourly_salary + ' x ' + formatTime(totalWorkMinutes));
                 $('#totalWorkHours_amt').text(((totalWorkMinutes / 60) * hourly_salary).toFixed(2));
