@@ -146,6 +146,7 @@ class Leave extends CI_Controller
             $name   = $this->input->post('leavename');
             $nodays = $this->input->post('leaveday');
             $status = $this->input->post('status');
+            $type = $this->input->post('type');
             $this->form_validation->set_error_delimiters();
             $this->form_validation->set_rules('leavename', 'leave name', 'trim|required|min_length[1]|max_length[220]|xss_clean');
             
@@ -157,7 +158,8 @@ class Leave extends CI_Controller
                 $data = array(
                     'name' => $name,
                     'leave_day' => $nodays,
-                    'status' => $status
+                    'status' => $status,
+                    'type' => $type
                 );
                 if (empty($id)) {
                     $success = $this->leave_model->Add_leave_Info($data);

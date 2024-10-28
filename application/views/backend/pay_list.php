@@ -407,17 +407,26 @@ function fetchAttendanceData(month) {
                     
 
                     // Exclude Saturday and Sunday
-                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date)) && !isLeave(new Date(attendance.atten_date)) && !(attendance.off_day === String(dayOfWeek))) {
+                    var leave = isLeave(new Date(attendance.atten_date));
+                    if ((dayOfWeek !== 6 && dayOfWeek !== 0) && !isHoliday(new Date(attendance.atten_date)) && !leave && !(attendance.off_day === String(dayOfWeek))) {
                         totalMonthMinutes += dayWorkMinutes;
                         work_hours = attendance.work_hours;
                     } else {
+                        if ((leave && leave.type == '1') || isHoliday(new Date(attendance.atten_date)))
+                        {
+                             work_hours = attendance.work_hours;
+                             attendance.Hours = attendance.work_hours;
+                             workHours = (attendance.work_hours.split(':')[0] * 60) + parseInt(attendance.work_hours.split(':')[1]);
+                             totalWorkMinutes += workHours;
+                             totalMonthMinutes += workHours;
+                        } else {
                             work_hours = 0;
                             workHours = 0;
+                        }
                         rowBackgroundColor = 'style="background-color: #E5E4E2;"';
                     }
 
                     // Calculate overtime in minutes
-
                     if(workHours > 0)
                     {
                         overtimeMinutes = workHours - dayWorkMinutes;
@@ -430,7 +439,6 @@ function fetchAttendanceData(month) {
                         } else {
                             overtime = `<td>${overtime}</td>`;
                         }
-
 
                         // Calculate night hours (22:00 to 06:00)
                         var signoutTime = moment(attendance.signout_time, "HH:mm");
@@ -469,10 +477,6 @@ function fetchAttendanceData(month) {
 
                             rowBackgroundColor = dayWorkMinutes === 0 ? 'style="background-color: #ffcccb;"' : '';
                             
-                            if (dayWorkMinutes > 0) {
-                                totalWorkDays++; // Count the day as a working day if there are logged hours
-                            }
-
                             // Determine daily meal based on 8 hours vs work hours
                             mealLess = workHours < 480 ? 4.09 : "";
                             mealEqualOrMore = workHours >= 480 ? 4.09 : "";
@@ -480,6 +484,9 @@ function fetchAttendanceData(month) {
                             totalMealsLess += mealLess !== "" ? parseFloat(mealLess) : 0;
                             totalMealsEqualOrMore += mealEqualOrMore !== "" ? parseFloat(mealEqualOrMore) : 0;
                         }
+                        if (workHours > 0) {
+                                totalWorkDays++; // Count the day as a working day if there are logged hours
+                            }
                     }
                     var holiday_type =getHolidayType(new Date(attendance.atten_date));
                     if (isHoliday(new Date(attendance.atten_date)))
@@ -508,7 +515,7 @@ function fetchAttendanceData(month) {
                         '<td>' + attendance.signin_time + '</td>' +
                         '<td>' + attendance.signout_time + '</td>' +
                         '<td>' + attendance.break + '</td>' +
-                        '<td>' + attendance.Hours + '</td>' +
+                        '<td>' + attendance.Hours +'</td>' +
                         '<td>' + work_hours + '</td>' +
                         overtime +
                         '<td>' + formatTime(nightMinutes) + '</td>' +

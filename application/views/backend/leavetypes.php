@@ -85,6 +85,15 @@
                                 <input type="text" name="leaveday" class="form-control" id="recipient-name1" value="">
                             </div>
                             <div class="form-group">
+                                <label class="control-label">type</label>
+                                <select class="form-control custom-select" data-placeholder="Choose a type" tabindex="1" name="type" required>
+                                    <option value="">Select Here</option>
+                                    <option value="1">Paid</option>
+                                    <option value="0">Un-Paid</option>
+                                </select>
+                            </div>
+                            
+                            <div class="form-group">
                                 <label class="control-label">status</label>
                                 <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" name="status" required>
                                     <option value="">Select Here</option>

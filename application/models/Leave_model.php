@@ -52,7 +52,13 @@
         $employee = $query->row();
         $em_id = $employee->em_id;
 
-        $sql = "SELECT * FROM `emp_leave` where `em_id` = '$em_id' and leave_status = 'Approve'";
+        $sql = "
+        SELECT emp_leave.*, leave_types.type_id, leave_types.name, leave_types.type
+        FROM emp_leave
+        LEFT JOIN leave_types ON emp_leave.typeid = leave_types.type_id
+        WHERE emp_leave.em_id = '$em_id' AND emp_leave.leave_status = 'Approve'
+    ";
+    
         $query = $this->db->query($sql);
         $result = $query->result();
     
@@ -225,7 +231,7 @@
     public function GetallApplication($emid){
     $sql = "SELECT `emp_leave`.*,
       `employee`.`em_id`,`first_name`,`last_name`,`em_code`,
-      `leave_types`.`type_id`,`name`
+      `leave_types`.`type_id`,`name`,`type`
       FROM `emp_leave`
       LEFT JOIN `employee` ON `emp_leave`.`em_id`=`employee`.`em_id`
       LEFT JOIN `leave_types` ON `emp_leave`.`typeid`=`leave_types`.`type_id`
@@ -234,10 +240,11 @@
 		$result = $query->result();
 		return $result; 
     }
+
     public function AllLeaveAPPlication(){
     $sql = "SELECT `emp_leave`.*,
       `employee`.`em_id`,`first_name`,`last_name`,`em_code`,
-      `leave_types`.`type_id`,`name`
+      `leave_types`.`type_id`,`name`,`type`
       FROM `emp_leave`
       LEFT JOIN `employee` ON `emp_leave`.`em_id`=`employee`.`em_id`
       LEFT JOIN `leave_types` ON `emp_leave`.`typeid`=`leave_types`.`type_id`

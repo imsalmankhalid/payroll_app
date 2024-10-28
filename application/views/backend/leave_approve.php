@@ -168,8 +168,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label class="control-label">Leave Duration</label><br>
-                                    <input name="type" type="radio" id="radio_1" data-value="Half" class="duration" value="Half Day" checked="">
-                                    <label for="radio_1">Hourly</label>
+                                    <!-- <input name="type" type="radio" id="radio_1" data-value="Half" class="duration" value="Half Day" checked="">
+                                    <label for="radio_1">Hourly</label> -->
                                     <input name="type" type="radio" id="radio_2" data-value="Full" class="type" value="Full Day">
                                     <label for="radio_2">Full Day</label>
                                     <input name="type" type="radio" class="with-gap duration" id="radio_3" data-value="More" value="More than One day">
