@@ -687,6 +687,10 @@
                                                         <label>Daily Bonus</label>
                                                         <input  type="number" step="0.1" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
                                                     </div>
+                                                    <div class="form-group col-sm-3 m-t-5">
+                                                        <label>Weekly 45 hours Bonus</label>
+                                                        <input  type="number" step="0.1" name="weekly_bonus" class="form-control" placeholder="Weekly Bonus" value=<?php if(!empty($salaryvalue->weekly_bonus)) echo $salaryvalue->weekly_bonus ?> required>
+                                                    </div>
                                                 </div>
                                                 <!-- Button -->
                                                 <div class="form-group col-md-2 m-t-5 d-flex align-items-end">
