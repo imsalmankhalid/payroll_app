@@ -395,32 +395,32 @@ function loadDays() {
 
                     // Check if the date is a holiday or leave, and disable fields or set background
                     if (isHoliday(currentDateString)) {
-                        signInField.disabled = true;
-                        signOutField.disabled = true;
-                        durationField.disabled = true;
-                        breakField.disabled = true;
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
                         rowContainer.style.backgroundColor = '#F0FFF0';
                     }
 
                     if (isLeave(currentDateString)) {
-                        signInField.disabled = true;
-                        signOutField.disabled = true;
-                        durationField.disabled = true;
-                        breakField.disabled = true;
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
                         rowContainer.style.backgroundColor = '#DCD0FF'; // Set background to yellow for leave
                     }
                     if ((currentDate.getDay() === 0 || currentDate.getDay() === 6)) {
-                        signInField.disabled = true;
-                        signOutField.disabled = true;
-                        durationField.disabled = true;
-                        breakField.disabled = true;
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
                         rowContainer.style.backgroundColor = '#E5E4E2';
                     }
                     if (currentDate.getDay() === off_day) {
-                        signInField.disabled = true;
-                        signOutField.disabled = true;
-                        durationField.disabled = true;
-                        breakField.disabled = true;
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
                         rowContainer.style.backgroundColor = '#FFF9E3';
                         dateLabel.innerHTML += "<br>(Off Day)"
                     }

@@ -442,9 +442,9 @@ function fetchAttendanceData(month) {
                         overtime = formatTime(Math.abs(overtimeMinutes));
 
                         if (overtimeMinutes < 0) {
-                            overtime = `<td style="color: red;">- ${overtime}  -- ${overtimeMinutes} -- ${totalOvertimeMinutes}</td>`;
+                            overtime = `<td style="color: red;">- ${overtime}  </td>`;
                         } else {
-                            overtime = `<td>${overtime}  -- ${overtimeMinutes} -- ${totalOvertimeMinutes}</td>`;
+                            overtime = `<td>${overtime}</td>`;
                         }
 
                         // Calculate night hours (22:00 to 06:00)
