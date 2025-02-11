@@ -21,6 +21,7 @@
                 <div class="row">
                     <!-- Column -->
                     <?php if($this->session->userdata('user_type') == 'SUPER ADMIN' or $this->session->userdata('user_type') == 'ADMIN'): ?>
+
                     <div class="col-lg-3 col-md-6">
                         <div class="card">
                             <div class="card-body">
@@ -57,6 +58,7 @@
                                                         $this->db->select('*');
                                                     }
                                                     $this->db->where('leave_status','Not Approve');
+
                                                     $this->db->from("emp_leave");
                                                     echo $this->db->count_all_results();
                                                 ?> Leaves

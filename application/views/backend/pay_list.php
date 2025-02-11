@@ -397,6 +397,7 @@ function fetchAttendanceData(month) {
                 var totalWorkingDays = 0;
                 var work_hours = 0;
                 var totalWeeklyHours = 0;
+                var bonusHours = 0;
 
                 $.each(data, function(index, attendance) {
                     var date = moment(attendance.atten_date);
@@ -486,6 +487,9 @@ function fetchAttendanceData(month) {
                             totalMealsEqualOrMore += mealEqualOrMore !== "" ? parseFloat(mealEqualOrMore) : 0;
                         }
                         totalWorkMinutes += workHours;
+                        if(!isHoliday(new Date(attendance.atten_date)))
+                            bonusHours += workHours;
+
                         if (workHours > 0) {
                                 totalWorkDays++; // Count the day as a working day if there are logged hours
                             }
@@ -514,7 +518,7 @@ function fetchAttendanceData(month) {
                     if (leave)
                     {
                         rowBackgroundColor = 'style="background-color: #DCD0FF;"'; 
-                        holiday_type = leave.leave_type;
+                        holiday_type = leave.name;
                     }
 
                     if (attendance.off_day === String(dayOfWeek))
@@ -557,10 +561,9 @@ function fetchAttendanceData(month) {
                 var totalHours = totalWorkMinutes / 60;
                 var totalweekHours = totalWeeklyHours / 60;
                 var dailyBonus = totalWorkDays*daily_bonus;
+                var BonusAmount = (bonusHours / 60 * bonusPerHour) + (bonusHours / 60 * bonusPerHour2);
                 var totalSalary = (totalHours * hourly_salary) +
-                    (totalHours * bonusPerHour) +
-                    (totalHours * bonusPerHour2) +
-                    (totalMealsEqualOrMore + totalMealsLess) + dailyBonus;
+                    (totalMealsEqualOrMore + totalMealsLess) + dailyBonus + BonusAmount;
                 var weekly_bonusamt = totalweekHours * weekly_bonus;
                 
                 $('#totalWorkDays').text(totalWorkDays);
@@ -576,12 +579,12 @@ function fetchAttendanceData(month) {
                 $('#mealsFull_amt').text((totalMealsEqualOrMore + totalMealsLess).toFixed(2));
                 $('#mealsLess').text(totalMealsLess.toFixed(2));
                 $('#bonus').text(bonusPerHour + ' €/h');
-                $('#bonus_1').text(bonusPerHour + ' x ' + formatTime(totalWorkMinutes));
-                $('#bonus_2').text(bonusPerHour2 + ' x ' + formatTime(totalWorkMinutes));
+                $('#bonus_1').text(bonusPerHour + ' x ' + formatTime(bonusHours));
+                $('#bonus_2').text(bonusPerHour2 + ' x ' + formatTime(bonusHours));
                 $('#bonusDaily_amt').text(dailyBonus);
                 $('#bonus_daily').text(totalWorkDays + ' x ' + daily_bonus);
-                $('#bonus_amt').text(((totalWorkMinutes / 60) * bonusPerHour).toFixed(2));
-                $('#bonus2_amt').text(((totalWorkMinutes / 60) * bonusPerHour2).toFixed(2));
+                $('#bonus_amt').text(((bonusHours / 60) * bonusPerHour).toFixed(2));
+                $('#bonus2_amt').text(((bonusHours / 60) * bonusPerHour2).toFixed(2));
                 $('#bonus2').text(bonusPerHour2 + ' €/h');
                 $('#hourlyPay').text(hourly_salary + ' €/h');
                 $('#hour_45').text(formatTime(totalWeeklyHours));

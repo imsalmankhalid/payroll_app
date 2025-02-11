@@ -63,9 +63,8 @@
                                 <tbody>
                                     <?php foreach($application as $value): ?>
                                     <tr style="vertical-align:top">
-                                        <td><?php echo $value->id; ?></td>
-                                        <td><mark><?php echo $value->first_name.' '.$value->last_name ?></mark></td>
-                                        <td><?php echo $value->em_code; ?></td>
+                                        <td><mark><?php echo $employee->first_name.' '.$employee->last_name ?></mark></td>
+                                        <td><?php echo $employee->em_code; ?></td>
                                         <td><?php echo $value->name; ?></td>
                                         <td><?php echo date('jS \of F Y',strtotime($value->apply_date)); ?></td>
                                         <td><?php echo $value->start_date; ?></td>
@@ -108,7 +107,7 @@
                             <div class="form-group">
                                 <label>Employee</label>
                                 <select class=" form-control custom-select selectedEmployeeID"  tabindex="1" name="emid" required>
-                                    <option value="<?php echo $employee->em_id ?>"><?php echo $employee->first_name ?></option>
+                                    <option value="<?php echo $employee->em_code ?>"><?php echo $employee->first_name ?></option>
                                 </select>
                             </div>
                             <div class="form-group">

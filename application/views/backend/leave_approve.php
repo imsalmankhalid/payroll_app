@@ -144,7 +144,7 @@
                                     <label>Employee</label>
                                     <select class=" form-control custom-select selectedEmployeeID"  tabindex="1" name="emid" required>
                                         <?php foreach($employee as $value): ?>
-                                        <option value="<?php echo $value->em_id ?>"><?php echo $value->first_name.' '.$value->last_name?></option>
+                                        <option value="<?php echo $value->em_code ?>"><?php echo $value->first_name.' '.$value->last_name?></option>
                                         <?php endforeach; ?>
                                     </select>
                                 </div>

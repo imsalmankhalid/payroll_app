@@ -83,6 +83,7 @@
                                 <div class="col-md-4">
                                     <div class="form-group">
                                         <label>Employee</label>
+
                                         <select class="form-control custom-select" data-placeholder="Choose an Employee" tabindex="1" name="emid" required>
                                             <?php if (!empty($attval->em_code)) : ?>
                                                 <option value="<?php echo $attval->em_code ?>"><?php echo $attval->first_name . ' ' . $attval->last_name ?></option>
