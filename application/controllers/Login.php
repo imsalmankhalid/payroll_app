@@ -94,6 +94,8 @@ class Login extends CI_Controller {
             $this->session->set_userdata('name', $row->first_name);
             $this->session->set_userdata('email', $row->em_email);
             $this->session->set_userdata('user_image', $row->em_image);
+			$image = $row->em_image ? $row->em_image : 'user.png';
+			$this->session->set_userdata('user_image', $image);
             $this->session->set_userdata('user_type', $row->em_role);
 			$this->session->set_userdata('user_depid', $row->dep_id);
             return 'success';

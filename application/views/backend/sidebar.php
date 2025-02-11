@@ -8,7 +8,7 @@
                         ?>                
                 <div class="user-profile">
                     <!-- User profile image -->
-                    <div class="profile-img"> <img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image ?>" alt="user" />
+                    <div class="profile-img"> <img src="<?php echo base_url(); ?>assets/images/users/<?php echo $basicinfo->em_image ?? 'user.png'; ?>" alt="user" />
                         <!-- this is blinking heartbit-->
                         <div class="notify setpos"> <span class="heartbit"></span> <span class="point"></span> </div>
                     </div>
@@ -99,10 +99,10 @@
                         <li> <a class="has-arrow waves-effect waves-dark" href="#" aria-expanded="false"><i class="mdi mdi-newspaper"></i><span class="hide-menu">Payroll </span></a>
                             <ul aria-expanded="false" class="collapse">
                                 <!--<li><a href="<?php #echo base_url(); ?>Payroll/Salary_Type"> Payroll Type </a></li>-->
-                                <li><a href="<?php echo base_url(); ?>Payroll/Salary_List"> Payroll List </a></li>
+                                <!--<li><a href="<?php echo base_url(); ?>Payroll/Salary_List"> Payroll List </a></li>-->
                                 <li><a href="<?php echo base_url(); ?>Payroll/Pay_List"> Payslip Details </a></li>
-                                <li><a href="<?php echo base_url(); ?>Payroll/Generate_salary"> Generate Payslip</a></li>
-                                <li><a href="<?php echo base_url(); ?>Payroll/Payslip_Report"> Payslip Report</a></li>
+                                <!--<li><a href="<?php echo base_url(); ?>Payroll/Generate_salary"> Generate Payslip</a></li>-->
+                                <!--<li><a href="<?php echo base_url(); ?>Payroll/Payslip_Report"> Payslip Report</a></li>-->
                             </ul>
                         </li>
                         <li> <a href="<?php echo base_url()?>notice/All_notice" ><i class="mdi mdi-treasure-chest"></i><span class="hide-menu">Notice <span class="hide-menu"></a></li>

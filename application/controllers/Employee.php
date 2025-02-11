@@ -779,7 +779,7 @@ class Employee extends CI_Controller {
                 'type_id' => $type,
                 'day' => $day,
                 'total_day' => '0',
-                'year' => $year
+                'dateyear' => $year
             );
             $success = $this->employee_model->Add_Assign_Leave($data);
             echo "Successfully Added";
@@ -940,6 +940,9 @@ class Employee extends CI_Controller {
         $bonus1 = $this->input->post('hourly_bonus');
         $bonus2 = $this->input->post('hourly_bonus2');
         $daily_bonus = $this->input->post('daily_bonus');
+        $weekly_bonus = $this->input->post('weekly_bonus');
+        $off_day = $this->input->post('off_day');
+
         //$this->load->library('form_validation');
         //$this->form_validation->set_error_delimiters();
         //$this->form_validation->set_rules('total', 'total', 'trim|required|min_length[3]|max_length[10]|xss_clean');
@@ -958,6 +961,9 @@ class Employee extends CI_Controller {
                     'hourly_bonus' => $bonus1,
                     'hourly_bonus2' => $bonus2,
                     'daily_bonus' => $daily_bonus,
+                    'weekly_bonus' => $weekly_bonus,
+                    'off_day' => $off_day,
+
                 );
             if(!empty($sid)){
                 $success = $this->employee_model->Update_Salary($sid,$data);
@@ -1055,4 +1061,5 @@ class Employee extends CI_Controller {
         $data['invalidem'] = $this->employee_model->getInvalidUser();
         $this->load->view('backend/invalid_user',$data);
     }
+    
 }

@@ -20,7 +20,8 @@
                 <!-- Row -->
                 <div class="row">
                     <!-- Column -->
-                    <?php if($this->session->userdata('user_type') == 'SUPER ADMIN'): ?>
+                    <?php if($this->session->userdata('user_type') == 'SUPER ADMIN' or $this->session->userdata('user_type') == 'ADMIN'): ?>
+
                     <div class="col-lg-3 col-md-6">
                         <div class="card">
                             <div class="card-body">
@@ -56,6 +57,8 @@
                                                         // If the user is a 'SUPER ADMIN', select all records
                                                         $this->db->select('*');
                                                     }
+                                                    $this->db->where('leave_status','Not Approve');
+
                                                     $this->db->from("emp_leave");
                                                     echo $this->db->count_all_results();
                                                 ?> Leaves
@@ -120,18 +123,18 @@
                             <div class="box bg-info text-center">
                                 <h1 class="font-light text-white">
                                     <?php 
-                                        $this->db->where('status','INACTIVE');
+                                        $this->db->where('status','ACTIVE');
                                         $this->db->from("employee");
                                         echo $this->db->count_all_results();
                                     ?>
                                 </h1>
-                                <h6 class="text-white">Ex-employees</h6>
+                                <h6 class="text-white">Employees</h6>
                             </div>
                         </div>
                     </div>
                     <!-- Column -->
                     <div class="col-md-6 col-lg-3 col-xlg-3">
-                        <div class="card card-success card-inverse">
+                        <div class="card card-primary card-inverse">
                             <div class="box text-center">
                                 <h1 class="font-light text-white">
                                              <?php 
@@ -184,6 +187,7 @@
                 $userid = $this->session->userdata('user_login_id');
                 $todolist = $this->dashboard_model->GettodoInfo($userid);                 
                 $holiday = $this->dashboard_model->GetHolidayInfo();                 
+                $employees = $this->employee_model->emselect();
                 ?>
                 <!-- Row -->
                 <div class="row">
@@ -205,7 +209,7 @@
                                         </thead>
                                         <tbody>
                                         <?php foreach($notice AS $value): ?>
-                                            <?php if($value->depid == $this->session->userdata('user_depid')): ?>
+                                            <?php if($value->depid == $this->session->userdata('user_depid')|| $value->depid == "100") : ?>
                                                 <tr class="scrollbar" style="vertical-align:top">
                                                     <td style="width:100px"><?php echo $value->date ?></td>
                                                     <td><?php echo $value->title ?></td>
@@ -229,9 +233,101 @@
                     </div>
                     <!-- Column -->
                     <div class="col-lg-4">
+                    <div class="card">
+                        <div class="card-body">
+                            <h4 class="card-title">Employee Contracts - Expiry</h4>
+                            <h6 class="card-subtitle">List of contracts going to expire soon</h6>
+                            <div class="table-responsive">
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Employee Name</th>
+                                            <th>Contract Expiration Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $currentDate = new DateTime();
+                                        $oneMonthFromNow = new DateTime();
+                                        $oneMonthFromNow->modify('+1 month');
+                                        $idx = 0;
+                                        // Sort employees by contract end date
+                                        usort($employees, function($a, $b) {
+                                            return strtotime($a->em_contact_end) - strtotime($b->em_contact_end);
+                                        });
+                                        foreach ($employees as $item) {
+                                            $contractEndDate = new DateTime($item->em_contact_end);
+                                            if ($contractEndDate >= $currentDate && $contractEndDate <= $oneMonthFromNow) {
+                                                $idx++;
+
+                                                // Calculate the difference in days
+                                                $diffDays = $currentDate->diff($contractEndDate)->days;
+
+                                                // Determine the row color based on the number of days left
+                                                if ($diffDays <= 7) {
+                                                    $rowColor = '#E55451'; // Less than or equal to 7 days
+                                                } elseif ($diffDays <= 14) {
+                                                    $rowColor = '#E8ADAA'; // 8 to 14 days
+                                                } else {
+                                                    $rowColor = '#FFFFE0'; // 15 to 30 days
+                                                }
+
+                                                echo '<tr style="background-color: ' . $rowColor . ';">';
+                                                echo '<td><strong>' . $idx . '</td>';
+                                                echo '<td><strong><a href="' . base_url() . 'employee/view?I=' . base64_encode($item->em_id) . '" style="text-decoration: none; color: inherit;">' . $item->first_name . ' ' . $item->last_name . '</a></strong></td>';
+                                                echo '<td><strong>' . $item->em_contact_end . '</td>';
+                                                echo '</tr>';
+                                            }
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    </div>
+                </div>
+                <!-- Row -->
+                <div class="row">
+                    <div class="col-md-8">
                         <div class="card">
                             <div class="card-body">
-                                <h4 class="card-title">To Do list</h4>
+                                <h4 class="card-title">Running Project</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive" style="height:600px;overflow-y:scroll">
+                                    <table class="table table-hover earning-box">
+                                        <thead>
+                                            <tr>
+                                                <th>Title</th>
+                                                <th>Start Date</th>
+                                                <th>End Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                           <?php foreach($running AS $value): ?>
+                                            <tr style="vertical-align:top;background-color:#e3f0f7">
+                                                <td><a href="<?php echo base_url(); ?>Projects/view?P=<?php echo base64_encode($value->id); ?>"><?php echo substr("$value->pro_name",0,25).'...'; ?></a></td>
+                                                <td><?php echo $value->pro_start_date; ?></td>
+                                                <td><?php echo $value->pro_end_date; ?></td>
+                                            </tr>
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                </div>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card">
+                            <div class="card-body">
+                            <h4 class="card-title">To Do list</h4>
+                            </div>
+                            <div class="card">
+                            <div class="card-body">
+                                
                                 <h6 class="card-subtitle">List of your next task to complete</h6>
                                 <div class="to-do-widget m-t-20" style="height:550px;overflow-y:scroll">
                                             <ul class="list-task todo-list list-group m-b-0" data-role="tasklist">
@@ -266,8 +362,9 @@
                                 </div>                                
                             </div>
                         </div>
+                        </div>
                     </div>
-                </div>
+                </div> 
                 <!-- Row -->
                 <div class="row">
                     <div class="col-md-8">

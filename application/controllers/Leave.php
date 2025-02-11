@@ -50,14 +50,38 @@ class Leave extends CI_Controller
             redirect(base_url(), 'refresh');
         }
     }
+    public function Leaves_for_calendar()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            $id = $this->input->get('id');
+            $result = $this->leave_model->GetAllLeaveInfo($id);
+
+            echo json_encode($result);
+           
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
 
     public function Holidays_for_calendar()
     {
         if ($this->session->userdata('user_login_access') != False) {
             $result = $this->leave_model->GetAllHoliInfoForCalendar();
-            print_r($result);
-            die();
-            echo jason_encode($result);
+
+            echo json_encode($result);
+           
+        } else {
+            redirect(base_url(), 'refresh');
+        }
+    }
+
+    public function get_off_day()
+    {
+        if ($this->session->userdata('user_login_access') != False) {
+            $id = $this->input->get('id');
+            $result = $this->employee_model->GetOffdayValue($id);
+
+            echo json_encode($result);
            
         } else {
             redirect(base_url(), 'refresh');
@@ -122,6 +146,7 @@ class Leave extends CI_Controller
             $name   = $this->input->post('leavename');
             $nodays = $this->input->post('leaveday');
             $status = $this->input->post('status');
+            $type = $this->input->post('type');
             $this->form_validation->set_error_delimiters();
             $this->form_validation->set_rules('leavename', 'leave name', 'trim|required|min_length[1]|max_length[220]|xss_clean');
             
@@ -133,7 +158,8 @@ class Leave extends CI_Controller
                 $data = array(
                     'name' => $name,
                     'leave_day' => $nodays,
-                    'status' => $status
+                    'status' => $status,
+                    'type' => $type
                 );
                 if (empty($id)) {
                     $success = $this->leave_model->Add_leave_Info($data);
@@ -239,7 +265,7 @@ class Leave extends CI_Controller
             $appenddate   = $this->input->post('enddate');
             $hourAmount   = $this->input->post('hourAmount');
             $reason       = $this->input->post('reason');
-            $type         = $this->input->post('type');
+            $type         = $this->input->post('leavetype');
             // $duration     = $this->input->post('duration');
 
             if($type == 'Half Day') {
@@ -552,12 +578,15 @@ class Leave extends CI_Controller
                     );
             $success  = $this->leave_model->updateLeaveAssignedInfo($employeeId, $type, $data);
             $earnval = $this->leave_model->emEarnselectByLeave($employeeId); 
+            if (!empty($earnval)) 
+            {
               $data = array();
               $data = array(
                         'present_date' => $earnval->present_date - ($duration/8),
                         'hour' => $earnval->hour - $duration
                     );
-            $success = $this->leave_model->UpdteEarnValue($employeeId,$data);                     
+                $success = $this->leave_model->UpdteEarnValue($employeeId,$data);                     
+            }
             echo "Updated successfully";
                 } else {
                 //If not taken yet

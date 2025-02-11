@@ -247,8 +247,35 @@ $.ajax({
 
 // Fetch holiday calendar and store it
 var holidays = [];
+var leaves = [];
+var off_day = -1;
 
 function updateDays() {
+        const idValue = $('#eemid').val();
+        var leavesRequest = $.ajax({
+            url: '<?php echo base_url(); ?>leave/Leaves_for_calendar',
+            method: 'GET',
+            data: { id: idValue },
+            dataType: 'json'
+        });
+
+        var offdayRequest = $.ajax({
+            url: '<?php echo base_url(); ?>leave/get_off_day',
+            method: 'GET',
+            data: { id: idValue },
+            dataType: 'json'
+        });
+        // Fetch leaves
+        $.when(leavesRequest, offdayRequest).done(function(leavesResponse, offdayResp) {
+            leaves = leavesResponse[0];
+            off_day = parseInt(offdayResp[0]);
+            loadDays();
+        }).fail(function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX request failed:', textStatus, errorThrown);
+        });
+}
+
+function loadDays() {
     var emid = $('#eemid').val();
     var month = $('#selected_month').val();
     $.ajax({
@@ -366,13 +393,36 @@ function updateDays() {
                         calculateDuration(signInField, signOutField, breakField, durationField);
                     });
 
-                    // Disable input fields if the date is a holiday
+                    // Check if the date is a holiday or leave, and disable fields or set background
                     if (isHoliday(currentDateString)) {
-                        signInField.disabled = true;
-                        signOutField.disabled = true;
-                        durationField.disabled = true;
-                        breakField.disabled = true;
-                        rowContainer.classList.add('holiday-row'); // Add holiday class for styling
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
+                        rowContainer.style.backgroundColor = '#F0FFF0';
+                    }
+
+                    if (isLeave(currentDateString)) {
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
+                        rowContainer.style.backgroundColor = '#DCD0FF'; // Set background to yellow for leave
+                    }
+                    if ((currentDate.getDay() === 0 || currentDate.getDay() === 6)) {
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
+                        rowContainer.style.backgroundColor = '#E5E4E2';
+                    }
+                    if (currentDate.getDay() === off_day) {
+                        // signInField.disabled = true;
+                        // signOutField.disabled = true;
+                        // durationField.disabled = true;
+                        // breakField.disabled = true;
+                        rowContainer.style.backgroundColor = '#FFF9E3';
+                        dateLabel.innerHTML += "<br>(Off Day)"
                     }
                 })(day);
             }
@@ -382,6 +432,12 @@ function updateDays() {
     });
 }
 
+    // Function to check if the date is a leave
+    function isLeave(date) {
+        return leaves.some(function(leave) {
+            return date >= leave.from_date && date <= leave.to_date;
+        });
+    }
 
 function isHoliday(date) {
     return holidays.some(function(holiday) {
@@ -402,7 +458,7 @@ function calculateDuration(signInField, signOutField, breakField, durationField)
         var breakMs = parseFloat(breakTime) * 60 * 1000; 
         var diffMs = signOutDate - signInDate - breakMs;
         console
-        if (diffMs > 0) {
+        if (diffMs >= 0) {
             var diffHrs = Math.floor(diffMs / 3600000);
             var diffMins = Math.floor((diffMs % 3600000) / 60000);
             durationField.value = diffHrs + 'h ' + diffMins + 'm';

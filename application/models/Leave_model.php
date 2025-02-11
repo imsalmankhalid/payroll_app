@@ -39,11 +39,50 @@
         $result = $query->result();
         return $result;
     }
+    public function GetAllLeaveInfo($id) {
+        $sql = "SELECT em_id FROM employee WHERE em_code = '$id' ";
+        $query = $this->db->query($sql);
+        
+        // Check if any employee was found
+        if ($query->num_rows() == 0) {
+            return []; // Return an empty array if no employee is found
+        }
+        
+        // Get the em_id
+        $employee = $query->row();
+        $em_id = $employee->em_id;
+
+        $sql = "
+        SELECT emp_leave.*, leave_types.type_id, leave_types.name, leave_types.type
+        FROM emp_leave
+        LEFT JOIN leave_types ON emp_leave.typeid = leave_types.type_id
+        WHERE emp_leave.em_id = '$em_id' AND emp_leave.leave_status = 'Approve'
+    ";
+    
+        $query = $this->db->query($sql);
+        $result = $query->result();
+    
+        // Iterate over the result and rename the keys
+        foreach ($result as $leave) {
+            $leave->from_date = $leave->start_date;
+            $leave->to_date = $leave->end_date;
+            // Check if end_date is empty
+            if (empty($leave->end_date)) {
+                $leave->to_date = $leave->start_date; // Set to start_date if end_date is empty
+            }
+            unset($leave->start_date); // Remove the old key
+            unset($leave->end_date);   // Remove the old key
+        }
+    
+        return $result;
+    }
+    
+
     public function GetAllHoliInfoForCalendar(){
         $sql = "SELECT * FROM `holiday`";
         $query = $this->db->query($sql);
         $result = $query->result();
-        return json_encode($result);
+        return $result;
     }
     public function GetLeaveValue($id){
         $sql = "SELECT * FROM `holiday` WHERE `id`='$id'";
@@ -192,7 +231,7 @@
     public function GetallApplication($emid){
     $sql = "SELECT `emp_leave`.*,
       `employee`.`em_id`,`first_name`,`last_name`,`em_code`,
-      `leave_types`.`type_id`,`name`
+      `leave_types`.`type_id`,`name`,`type`
       FROM `emp_leave`
       LEFT JOIN `employee` ON `emp_leave`.`em_id`=`employee`.`em_id`
       LEFT JOIN `leave_types` ON `emp_leave`.`typeid`=`leave_types`.`type_id`
@@ -201,14 +240,15 @@
 		$result = $query->result();
 		return $result; 
     }
+
     public function AllLeaveAPPlication(){
     $sql = "SELECT `emp_leave`.*,
       `employee`.`em_id`,`first_name`,`last_name`,`em_code`,
-      `leave_types`.`type_id`,`name`
+      `leave_types`.`type_id`,`name`,`type`
       FROM `emp_leave`
       LEFT JOIN `employee` ON `emp_leave`.`em_id`=`employee`.`em_id`
       LEFT JOIN `leave_types` ON `emp_leave`.`typeid`=`leave_types`.`type_id`
-      WHERE `emp_leave`.`leave_status`='Not Approve'";
+      order by apply_date DESC";
         $query=$this->db->query($sql);
 		$result = $query->result();
 		return $result; 

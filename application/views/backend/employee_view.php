@@ -29,7 +29,7 @@
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#document" role="tab" style="font-size: 14px;"> Document</a> </li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#salary" role="tab" style="font-size: 14px;"> Salary</a> </li>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#leave" role="tab" style="font-size: 14px;"> Leave</a> </li>
-                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#social" role="tab" style="font-size: 14px;"> Social Media</a> </li>
+                                <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#social" role="tab" style="font-size: 14px;"> Employee Notes</a> </li>
                                 <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?>
                                 <li class="nav-item"> <a class="nav-link" data-toggle="tab" href="#password" role="tab" style="font-size: 14px;"> Change Password</a> </li>
                                 <?php } else { ?>
@@ -61,12 +61,6 @@
                             <div class="card-body"> <small class="text-muted">Email address </small>
                                 <h6><?php echo $basic->em_email; ?></h6> <small class="text-muted p-t-30 db">Phone</small>
                                 <h6><?php echo $basic->em_phone; ?></h6> 
-                                <small class="text-muted p-t-30 db">Social Profile</small>
-                                <br/>
-                                <a class="btn btn-circle btn-secondary" href="<?php if(!empty($socialmedia->skype_id)) echo $socialmedia->facebook ?>" target="_blank"><i class="fa fa-facebook"></i></a>
-                                <a class="btn btn-circle btn-secondary" href="<?php if(!empty($socialmedia->skype_id)) echo $socialmedia->twitter ?>" target="_blank"><i class="fa fa-twitter"></i></a>
-                                <a class="btn btn-circle btn-secondary" href="<?php if(!empty($socialmedia->skype_id)) echo $socialmedia->skype_id ?>" target="_blank"><i class="fa fa-skype"></i></a>
-                                <a class="btn btn-circle btn-secondary" href="<?php if(!empty($socialmedia->google_Plus)) echo $socialmedia->google_Plus ?>" target="_blank"><i class="fa fa-google"></i></a>
                             </div>
                         </div>                                                    
                                                 </div>
@@ -548,7 +542,7 @@
                                                    <?php foreach($Leaveinfo as $value): ?>
                                                     <tr>
                                                         <td><?php echo $value->name; ?></td>
-                                                        <td><?php echo $value->total_day; ?>/<?php echo $value->day; ?></td>
+                                                        <td><?php echo $value->day; ?>/<?php echo $value->day; ?></td>
                                                     </tr>
                                                     <?php endforeach; ?>
                                                 </tbody>
@@ -582,32 +576,34 @@
                                 </div>
                                 <div class="tab-pane" id="social" role="tabpanel">
                                     <div class="card-body">
-				                                <form class="row" action="Save_Social" method="post" enctype="multipart/form-data">
-				                                    <div class="form-group col-md-6 m-t-20">
-				                                        <label>Facebook</label>
-				                                        <input type="url" class="form-control" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> name="facebook" value="<?php if(!empty($socialmedia->facebook)) echo $socialmedia->facebook ?>" placeholder="www.facebook.com"> 
-				                                    </div>
-				                                    <div class="form-group col-md-6 m-t-20">
-				                                        <label>Twitter</label>
-				                                        <input type="text" class="form-control" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> name="twitter" value="<?php if(!empty($socialmedia->twitter)) echo $socialmedia->twitter ?>" > 
-				                                    </div>
-				                                    <div class="form-group col-md-6 m-t-20">
-				                                        <label>Google +</label>
-				                                        <input type="text" id="" name="google" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> class="form-control " value="<?php if(!empty($socialmedia->google_plus)) echo $socialmedia->google_plus ?>"> 
-				                                    </div>
-				                                    <div class="form-group col-md-6 m-t-20">
-				                                        <label>Skype</label>
-				                                        <input type="text" id="" name="skype" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> class="form-control " value="<?php if(!empty($socialmedia->skype_id)) echo $socialmedia->skype_id ?>"> 
-				                                    </div>
-				                                <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?>
-                                                    <?php } else { ?>
-				                                    <div class="form-actions col-md-12">
-                                                    <input type="hidden" name="emid" value="<?php echo $basic->em_id; ?>">                                                   
-                                                    <input type="hidden" name="id" value="<?php if(!empty($socialmedia->id)) echo $socialmedia->id ?>">                                                   
-				                                        <button type="submit" class="btn btn-info pull-right"> <i class="fa fa-check"></i> Save</button>
-				                                    </div>
-				                                    <?php } ?>
-				                                </form>
+                                    <form class="row" action="Save_Social" method="post" enctype="multipart/form-data">
+                                        <div class="form-group col">
+                                            <label>Employee Notes</label>
+                                            <textarea class="form-control" name="facebook" placeholder="Employee notes" style="height: 150px;"><?php if (!empty($socialmedia->facebook)) echo $socialmedia->facebook; ?></textarea>
+                                        </div>
+                                        <div class="form-group col-md-6 m-t-20" style="display: none;">
+                                            <label>Twitter</label>
+                                            <input type="text" class="form-control" name="twitter" value="<?php if (!empty($socialmedia->twitter)) echo $socialmedia->twitter; ?>" readonly>
+                                        </div>
+                                        <div class="form-group col-md-6 m-t-20" style="display: none;">
+                                            <label>Google +</label>
+                                            <input type="text" name="google" class="form-control" value="<?php if (!empty($socialmedia->google_plus)) echo $socialmedia->google_plus; ?>" readonly>
+                                        </div>
+                                        <div class="form-group col-md-6 m-t-20" style="display: none;">
+                                            <label>Skype</label>
+                                            <input type="text" name="skype" class="form-control" value="<?php if (!empty($socialmedia->skype_id)) echo $socialmedia->skype_id; ?>" readonly>
+                                        </div>
+                                        <?php if ($this->session->userdata('user_type') == 'EMPLOYEE') { ?>
+                                            <!-- No submit button for employees -->
+                                        <?php } else { ?>
+                                            <div class="form-actions col-md-12">
+                                                <input type="hidden" name="emid" value="<?php echo $basic->em_id; ?>">
+                                                <input type="hidden" name="id" value="<?php if (!empty($socialmedia->id)) echo $socialmedia->id; ?>">
+                                                <button type="submit" class="btn btn-info pull-right"><i class="fa fa-check"></i> Save</button>
+                                            </div>
+                                        <?php } ?>
+                                    </form>
+
                                     </div>
                                 </div>
                                 <div class="tab-pane" id="password" role="tabpanel">
@@ -650,29 +646,51 @@
                                                     <?php endforeach; ?>
                                                 </select>
                                             </div> 
-			                                    <div class="form-group col-sm-1 m-t-5">
+			                                    <div class="form-group col-sm-2 m-t-5">
 			                                        <label>Amount</label>
 			                                        <input type="text" name="total" <?php if($this->session->userdata('user_type')=='EMPLOYEE'){ ?> readonly <?php } ?> class="form-control form-control-line total" placeholder="total salary" value="<?php if(!empty($salaryvalue->total)) echo $salaryvalue->total ?>" required> 
 			                                    </div>
-                                                </div><div class="row">
+
+
+                                                </div>
+                                                <div class="row">
+                                                <div class="form-group col-sm-2 m-t-5">
+                                                    <label class="control-label">Off day in week</label>
+                                                    <select name="off_day" class="form-control custom-select" data-placeholder="Choose a Category" >
+                                                        <option value="-1">None</option>
+                                                        <option value="1">Monday</option>
+                                                        <option value="2">Tuesday</option>
+                                                        <option value="3">Wednesday</option>
+                                                        <option value="4">Thursday</option>
+                                                        <option value="5">Friday</option>
+                                                        <option value="6">Saturday</option>
+                                                        <option value="0">Sunday</option>
+                                                    </select>
+                                                </div></div>
+                                                <div class="row">
                                                     <!-- Working Hours -->
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Working Hours</label>
-                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> required>
+                                                        <input  type="time" name="working_hours" class="form-control form-control-line" placeholder="Working Hours" value=<?php if(!empty($salaryvalue->work_hours)) echo $salaryvalue->work_hours ?> >
                                                     </div>
                                                 </div>
                                                 <div class="row">
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus</label>
-                                                        <input  type="number" name="hourly_bonus" class="form-control" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> required>
+                                                        <input  type="number" step="0.1" name="hourly_bonus" class="form-control" placeholder="Hourly Bonus" value=<?php if(!empty($salaryvalue->hourly_bonus)) echo $salaryvalue->hourly_bonus ?> >
                                                     </div>
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Hourly Bonus - 2</label>
-                                                        <input  type="number" name="hourly_bonus2" class="form-control" placeholder="Hourly Bonus 2" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> required>
+                                                        <input  type="number" step="0.1" name="hourly_bonus2" class="form-control" placeholder="Hourly Bonus 2" value=<?php if(!empty($salaryvalue->hourly_bonus2)) echo $salaryvalue->hourly_bonus2 ?> >
                                                     </div>
                                                     <div class="form-group col-sm-3 m-t-5">
                                                         <label>Daily Bonus</label>
-                                                        <input  type="number" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
+                                                        <input  type="number" step="0.1" name="daily_bonus" class="form-control" placeholder="Daily Bonus" value=<?php if(!empty($salaryvalue->daily_bonus)) echo $salaryvalue->daily_bonus ?> required>
+                                                    </div>
+                                                    <div class="form-group col-sm-3 m-t-5">
+                                                        <label>Weekly 45 hours Bonus</label>
+                                                        <input  type="number" step="0.1" name="weekly_bonus" class="form-control" placeholder="Weekly Bonus" value=<?php if(!empty($salaryvalue->weekly_bonus)) echo $salaryvalue->weekly_bonus ?> required>
+
                                                     </div>
                                                 </div>
                                                 <!-- Button -->

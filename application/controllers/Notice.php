@@ -44,8 +44,8 @@ class Notice extends CI_Controller {
             
             $this->load->library('form_validation');
             $this->form_validation->set_error_delimiters();
-            $this->form_validation->set_rules('title', 'title', 'trim|required|min_length[25]|max_length[150]|xss_clean');
-            $this->form_validation->set_rules('text', 'text', 'trim|required|min_length[25]|max_length[500]|xss_clean');
+            $this->form_validation->set_rules('title', 'title', 'trim|required|min_length[2]|max_length[250]|xss_clean');
+            $this->form_validation->set_rules('text', 'text', 'trim|required|min_length[2]|max_length[5000]|xss_clean');
     
             if ($this->form_validation->run() == FALSE) {
                 echo validation_errors();

@@ -97,6 +97,7 @@
                                 <div class="form-group">
                                 <select class="form-control custom-select" data-placeholder="Choose a Category" tabindex="1" id="depid" name="depid" style="margin-top: 21px;" required>
                                     <option value="#">Department</option>
+                                    <option value="100">ALL</option>
                                     <?php foreach ($department as $value): ?>
                                     <option value="<?php echo $value->id; ?>">
                                         <?php echo $value->dep_name; ?>
